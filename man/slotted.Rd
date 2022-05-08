@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils-html.R
 \name{slotted}
 \alias{slotted}
-\title{Wraps a given HTML tag into a valid HTML element what can be slotted into a
-  specific slot in a web component.}
+\title{Slot into component slot.}
 \usage{
 slotted(name, ...)
 }
@@ -17,5 +16,5 @@ a HTML tag that can be added to the page.
 }
 \description{
 Wraps a given HTML tag into a valid HTML element what can be slotted into a
-  specific slot in a web component.
+specific slot in a web component.
 }

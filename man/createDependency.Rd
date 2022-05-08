@@ -2,7 +2,7 @@
 % Please edit documentation in R/templates.R
 \name{createDependency}
 \alias{createDependency}
-\title{Generates a dependency HTML tag with a given content, scope and type.}
+\title{Generate a dependency tag.}
 \usage{
 createDependency(content, scope = "local", type = "script")
 }
@@ -16,7 +16,7 @@ scope the return will either be a inline HTML tag to a header HTML tag.}
 simply valid CSS.}
 }
 \value{
-a HTML tag that can be added to the page.
+A HTML tagList.
 }
 \description{
 Generates a dependency HTML tag with a given content, scope and type.

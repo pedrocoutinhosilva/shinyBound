@@ -17,6 +17,10 @@ if (typeof shinyBoundScopedScript != 'function') {
       document.getElementById(message.id).scopedCallback(message.callback)
     }
   }
-  
+
   Shiny.addCustomMessageHandler('shinyBoundScopedScript', shinyBoundScopedScript)
+}
+
+var ShinyBound = {
+  version: null
 }

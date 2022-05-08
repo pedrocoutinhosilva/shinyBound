@@ -2,7 +2,7 @@
 % Please edit documentation in R/components.R
 \name{updateComponent}
 \alias{updateComponent}
-\title{Update the component state with the corresponding inputId}
+\title{Update a component state.}
 \usage{
 updateComponent(session = getDefaultReactiveDomain(), inputId, ...)
 }
@@ -10,11 +10,13 @@ updateComponent(session = getDefaultReactiveDomain(), inputId, ...)
 \item{session}{The session object passed to function given to shinyServer.
 Default is getDefaultReactiveDomain().}
 
-\item{inputId}{The type of the component that was used in registerWebComponent
-to register the component.}
+\item{inputId}{The id of the `component` object.}
 
 \item{...}{Named attributes to update and corresponding values.}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
-Update the component state with the corresponding inputId
+Update the component state with the corresponding inputId.
 }

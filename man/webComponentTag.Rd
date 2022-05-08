@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils-html.R
 \name{webComponentTag}
 \alias{webComponentTag}
-\title{Generates a HTML custom tag with a defined ID, content and attributes.
-  Used in scaffoldWC().}
+\title{Generate a custom HTML tag.}
 \usage{
 webComponentTag(htmlTagName, inputId, ...)
 }
@@ -15,9 +14,9 @@ webComponentTag(htmlTagName, inputId, ...)
 \item{...}{Attributes and content of the web component HTML wrapper tag}
 }
 \value{
-A valid HTML dependency to add to a UI object
+A HTML tagList.
 }
 \description{
 Generates a HTML custom tag with a defined ID, content and attributes.
-  Used in scaffoldWC().
+Used in scaffoldWC().
 }

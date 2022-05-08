@@ -2,8 +2,7 @@
 % Please edit documentation in R/templates.R
 \name{shinyBindings}
 \alias{shinyBindings}
-\title{Generates a HTML fragment that can be added to a page to initialize a
-  specific set of shiny bindings for a component. Used in scaffoldWC().}
+\title{Generate a Shiny Bind.}
 \usage{
 shinyBindings(template, webClassName, htmlTagName)
 }
@@ -15,9 +14,9 @@ shinyBindings(template, webClassName, htmlTagName)
 \item{htmlTagName}{A valid HTML tag name to use in the template}
 }
 \value{
-A valid HTML dependency to add to a UI object
+A HTML tagList.
 }
 \description{
 Generates a HTML fragment that can be added to a page to initialize a
-  specific set of shiny bindings for a component. Used in scaffoldWC().
+specific set of shiny bindings for a component. Used in scaffoldWC().
 }

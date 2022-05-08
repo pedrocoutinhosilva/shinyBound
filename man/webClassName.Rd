@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-html.R
 \name{webClassName}
 \alias{webClassName}
-\title{Converts a string into a valid format that can be used as a class name}
+\title{Generate a valid HTML class name.}
 \usage{
 webClassName(string)
 }

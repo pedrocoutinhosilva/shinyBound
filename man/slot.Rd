@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils-html.R
 \name{slot}
 \alias{slot}
-\title{A slot HTML tag with a given slot name. Can be used to define template areas
-  where content will be added in the future.}
+\title{HTML slot tag.}
 \usage{
 slot(name)
 }
@@ -15,5 +14,5 @@ a HTML tag that can be added to the page.
 }
 \description{
 A slot HTML tag with a given slot name. Can be used to define template areas
-  where content will be added in the future.
+where content will be added in the future.
 }

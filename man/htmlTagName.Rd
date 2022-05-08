@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-html.R
 \name{htmlTagName}
 \alias{htmlTagName}
-\title{Converts a string into a valid format that can be used as a HTML tag name}
+\title{Generate a valid HTML tag name.}
 \usage{
 htmlTagName(string)
 }

@@ -14,8 +14,8 @@ with no changes.}
 The give object x with all NULL entries removed
 }
 \description{
-Removes null values from a given list or vector. If the given object is of a
-diferent type, the same object is returned with no changes.
+Removes null values from a given list or vector. If the given object is of
+a diferent type, the same object is returned with no changes.
 }
 \keyword{internal}
 \keyword{utils}

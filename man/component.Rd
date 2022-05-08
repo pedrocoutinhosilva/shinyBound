@@ -2,26 +2,24 @@
 % Please edit documentation in R/components.R
 \name{component}
 \alias{component}
-\title{Creates a web component instance associated with the given inputId with
-  the given HTML and state. For reusable components, it is adviced to use
-  registerWebComponent() and  useWebComponent() instead.}
+\title{Create a component.}
 \usage{
 component(inputId, innerHTML, defaultState, ...)
 }
 \arguments{
-\item{inputId}{The input slot that will be used to access the value}
+\item{inputId}{The `input` slot that will be used to access the value.}
 
-\item{innerHTML}{The HTML structure of the component}
+\item{innerHTML}{The HTML structure of the component.}
 
-\item{defaultState}{Initial state for the component}
+\item{defaultState}{Initial state for the component.}
 
 \item{...}{Named attributes to update and corresponding values.}
 }
 \value{
-a HTML tag that can be added to the page.
+A HTML tagList.
 }
 \description{
 Creates a web component instance associated with the given inputId with
-  the given HTML and state. For reusable components, it is adviced to use
-  registerWebComponent() and  useWebComponent() instead.
+the given HTML and state. For reusable components, it is adviced to use
+registerWebComponent() and  useWebComponent() instead.
 }

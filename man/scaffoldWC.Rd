@@ -2,8 +2,7 @@
 % Please edit documentation in R/templates.R
 \name{scaffoldWC}
 \alias{scaffoldWC}
-\title{Generates a HTML tag with the required web component creation code,
-  global dependencies, shiny bindings and tag content.}
+\title{Generate a shiny bound component.}
 \usage{
 scaffoldWC(inputId, innerHTML, webClassName, htmlTagName, initialState, ...)
 }
@@ -21,9 +20,9 @@ scaffoldWC(inputId, innerHTML, webClassName, htmlTagName, initialState, ...)
 \item{...}{Attributes and content of the web component HTML wrapper tag}
 }
 \value{
-A valid HTML dependency to add to a UI object
+A HTML tagList.
 }
 \description{
 Generates a HTML tag with the required web component creation code,
-  global dependencies, shiny bindings and tag content.
+global dependencies, shiny bindings and tag content.
 }

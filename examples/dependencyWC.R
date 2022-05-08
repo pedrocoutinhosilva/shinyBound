@@ -5,12 +5,14 @@ library(shinybound)
 
 registerComponent("fancyDropdown",
     HTML('
+
+    <script>console.log("shiny")</script>
     <script type="module" src="multi-select-webcomponent.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <div>
       <label fsProperty="innerHTML:content" for="planetId" class="form-label p-0">Planets</label>
-      <multi-select id="planetIds" class="border"
+      <multi-select fsProperty="disabled" id="planetIds" class="border"
         tsProperty="value"
         tsEvent="change"
         selecteditem="badge bg-primary pt-1 m-1"
@@ -21,7 +23,7 @@ registerComponent("fancyDropdown",
         clearbutton="btn btn-sm btn-light"
         clearbuttonspan="bi-x-circle text-danger"
         >
-        <option value="1">Mercury</option>
+        <option selected value="1">Mercury</option>
         <option value="2">Venus</option>
         <option value="3">Earth</option>
         <option value="4">Mars</option>
@@ -39,7 +41,7 @@ ui <- fluidPage(
     HTML('
     '),
   useComponent("testID", "fancyDropdown",
-    list()
+    list(content = "init label")
   ),
   actionButton("update", "Action button")
 )
@@ -54,7 +56,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$update, {
-    updateComponent(session, "testID", content = "updated")
+    updateComponent(session, "testID", content = "updated", disabled = TRUE)
 
     componentScript(session, "testID", HTML("function() {
       const pluto = document.createElement('option');
@@ -64,6 +66,7 @@ server <- function(input, output, session) {
       const msw = this.getElementById('planetIds');
 
       msw.options.push(pluto);
+
       msw.build();
     }"))
   })

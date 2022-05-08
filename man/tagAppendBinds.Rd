@@ -2,9 +2,7 @@
 % Please edit documentation in R/utils-html.R
 \name{tagAppendBinds}
 \alias{tagAppendBinds}
-\title{Links diferent bindings to the given tag. For all list arguments, instead of
-  a name = value pair, a simple string can be used instead if name and value
-  are the same. Both long and short versions of the attributes can be used.}
+\title{Add shinybound binds to tag.}
 \usage{
 tagAppendBinds(
   tag,
@@ -90,6 +88,6 @@ a HTML tag that can be added to the page.
 }
 \description{
 Links diferent bindings to the given tag. For all list arguments, instead of
-  a name = value pair, a simple string can be used instead if name and value
-  are the same. Both long and short versions of the attributes can be used.
+a name = value pair, a simple string can be used instead if name and value
+are the same. Both long and short versions of the attributes can be used.
 }

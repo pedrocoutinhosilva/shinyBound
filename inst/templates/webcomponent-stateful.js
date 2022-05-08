@@ -245,12 +245,14 @@ class {{className}} extends HTMLElement {
 
           const isStateUpdate = singleProp.includes(':') && this.isCustomElement(target);
 
+          console.log([bindProp, bindValue, target])
+
           switch(type) {
             case "property":
               isStateUpdate ? target.setState({[`${bindProp}`]: bindValue}) :
                 this.isArray(bindValue)
                   ? target[bindProp] = bindValue
-                  : node[bindProp] = bindValue.toString();
+                  : node[bindProp] = bindValue;
               break;
             case "attribute":
               isStateUpdate ? target.setState({[`${bindProp}`]: bindValue}) :

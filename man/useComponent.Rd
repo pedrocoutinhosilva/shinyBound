@@ -2,8 +2,7 @@
 % Please edit documentation in R/components.R
 \name{useComponent}
 \alias{useComponent}
-\title{Allows using a registered component in any place where a shiny UI can be
-  used. Usage is similar to base shiny UI input widgets.}
+\title{Use a registered component.}
 \usage{
 useComponent(inputId, componentClass, defaultState, ...)
 }
@@ -19,9 +18,9 @@ registerWebComponent to register the component.}
 slotted components}
 }
 \value{
-a HTML tag that can be added to the page.
+A HTML tagList.
 }
 \description{
 Allows using a registered component in any place where a shiny UI can be
-  used. Usage is similar to base shiny UI input widgets.
+used. Usage is similar to base shiny UI input widgets.
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/templates.R
 \name{webComponentBindings}
 \alias{webComponentBindings}
-\title{Generates a HTML fragment with the required web component creation code.
-  Used in scaffoldWC().}
+\title{Generate a Web component Bind.}
 \usage{
 webComponentBindings(
   template,
@@ -25,9 +24,9 @@ webComponentBindings(
 \item{initialState}{Initial state of the component binds}
 }
 \value{
-A valid HTML dependency to add to a UI object
+A HTML tagList.
 }
 \description{
 Generates a HTML fragment with the required web component creation code.
-  Used in scaffoldWC().
+Used in scaffoldWC().
 }

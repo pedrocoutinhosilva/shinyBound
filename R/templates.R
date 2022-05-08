@@ -109,9 +109,17 @@ webComponentBindings <- function(template,
 #' @param ... Attributes and content of the web component HTML wrapper tag
 #'
 #' @importFrom magrittr "%>%"
+#' @importFrom magrittr "%<>%"
 #' @importFrom htmltools tagList
 #' @importFrom rvest html_attrs
 #' @importFrom rvest html_node
+#' @importFrom rvest html_nodes
+#' @importFrom rvest read_html
+#' @importFrom xml2 xml_remove
+#' @importFrom stringr str_extract_all
+#' @importFrom stringr str_replace_all
+#' @importFrom shiny addResourcePath
+#' @importFrom stringi stri_rand_strings
 #'
 #' @return A HTML tagList.
 scaffoldWC <- function(inputId,
@@ -121,84 +129,58 @@ scaffoldWC <- function(inputId,
                        initialState,
                        ...) {
 
-  autoSlotScripts <- stringr::str_extract_all(toString(innerHTML), pattern = "<script((.|\\s)*?)\\/script>", simplify = TRUE)
-  innerHTML <- stringr::str_replace_all(toString(innerHTML), pattern = "<script((.|\\s)*?)\\/script>", "")
+  # Extract script tags to be parsed differently
+  script_nodes <- innerHTML %>%
+    HTML() %>%
+    read_html() %>%
+    html_nodes("script")
 
-  dir.create(paste0(tempdir(), "/www/wc/", inputId), recursive = TRUE, showWarnings = FALSE)
-  shiny::addResourcePath(paste0("wc/", inputId), paste0(tempdir(), "/www/wc/", inputId))
+  # Remove script tags from the full content
+  innerHTML %<>%
+    toString() %>%
+    str_replace_all("<script((.|\\s)*?)\\/script>", "")
 
+  # scripts folder
+  # TODO switch to html dep
+  dep_dir <- file.path(tempdir(), "www", "shinybound", "wc", inputId)
+  web_dir <- file.path("wc", inputId)
 
-  #
-  # for (script in autoSlotScripts) {
-  #   attributes <- rvest::read_html(HTML(script)) %>%
-  #     html_node('script') %>%
-  #     html_attrs() %>%
-  #     as.list()
-  #
-  #   if (file.exists(paste0("www/", attributes$src))) {
-  #     content <- read_html(paste0("www/", attributes$src))
-  #   } else {
-  #     request <- httr::GET(attributes$src)
-  #     if (!httr::http_error(request)) {
-  #       content <- request %>% httr::content(as = 'text')
-  #     }
-  #   }
-  #
-  #   parsed_url <- paste0("/www/wc/", inputId, "/", basename(attributes$src))
-  #
-  #   writeLines(
-  #     content %>%
-  #       stringr::str_replace_all(
-  #         "document",
-  #         "document.querySelector('#testCard').shadowRoot"
-  #       ),
-  #     paste0(tempdir(), "/www/wc/", inputId,"/", basename(attributes$src))
-  #   )
-  #   tags$script(src = parsed_url)
-  # }
+  dir.create(dep_dir, recursive = TRUE, showWarnings = FALSE)
+  addResourcePath(web_dir, dep_dir)
 
-  autoSlotScripts <- lapply(autoSlotScripts, function(script) {
-      attributes <- rvest::read_html(HTML(script)) %>% html_node('script') %>% html_attrs() %>% as.list()
+  autoSlotScripts <- lapply(script_nodes, function(script) {
+      attributes <- script %>%
+        html_attrs() %>%
+        as.list()
 
-      shadowSelector <- paste0("document.querySelector('#", inputId, "').shadowRoot")
-      shadowSelector <- "document"
-
-      if (file.exists(paste0("www/", attributes$src))) {
-          parsed <- readr::read_file(paste0("www/", attributes$src)) %>%
-              stringr::str_replace_all(
-                  "document",
-                  shadowSelector
-              )
-
-          parsed_url <- paste0("/wc/", inputId,"/", basename(attributes$src))
-
-          # file.create(paste0(tempdir(), "/www/wc/", inputId,"/", basename(attributes$src)))
-          writeLines(parsed, paste0(tempdir(), "/www/wc/", inputId,"/", basename(attributes$src)))
-
-          attributes$src <- parsed_url
-
-          return(as.character(do.call(tags$script, attributes)))
-      } else {
-        request <- httr::GET(attributes$src)
-        if (!httr::http_error(request)) {
-            parsed <- request %>% httr::content(as = 'text') %>%
-                stringr::str_replace_all(
-                    "document",
-                    shadowSelector
-                )
-
-            parsed_url <- paste0("/wc/", inputId,"/", basename(attributes$src))
-
-            # file.create(paste0(tempdir(), "/www/wc/", inputId,"/", basename(attributes$src)))
-            writeLines(parsed, paste0(tempdir(), "/www/wc/", inputId,"/", basename(attributes$src)))
-
-            attributes$src <- parsed_url
-
-            return(as.character(do.call(tags$script, attributes)))
-        }
+      # Inline scripts require no additional parsing
+      if (is.null(attributes$src)) {
+        return(as.character(script))
       }
 
-      script
+      # If the src is relative, load the file from the base shiny www
+      if (file.exists(file.path("www", attributes$src))) {
+          parsed_content <- file.path("www", attributes$src) %>%
+            readr::read_file() %>%
+            writeLines(file.path(dep_dir, basename(attributes$src)))
+      } else {
+        request <- httr::GET(attributes$src)
+
+        # If the src is not relative, check for a valid http request
+        if (httr::http_error(request)) {
+          return(as.character(script))
+        }
+
+        parsed_content <- request %>%
+          httr::content(as = "text") %>%
+          writeLines(file.path(dep_dir, basename(attributes$src)))
+      }
+
+      attributes$src <- web_dir %>%
+        file.path(basename(attributes$src))
+
+      do.call(tags$script, attributes) %>%
+        as.character()
   }) %>% unlist()
 
   tagList(

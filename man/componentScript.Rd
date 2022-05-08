@@ -2,7 +2,7 @@
 % Please edit documentation in R/components.R
 \name{componentScript}
 \alias{componentScript}
-\title{Runs Js code in the component scope}
+\title{Run JS code under the component scope.}
 \usage{
 componentScript(session = getDefaultReactiveDomain(), inputId, callback)
 }
@@ -10,11 +10,12 @@ componentScript(session = getDefaultReactiveDomain(), inputId, callback)
 \item{session}{The session object passed to function given to shinyServer.
 Default is getDefaultReactiveDomain().}
 
-\item{inputId}{The type of the component that was used in registerWebComponent
+\item{inputId}{The type of the component that was used in registerComponent
 to register the component.}
 
 \item{callback}{Named attributes to update and corresponding values.}
 }
 \description{
-Runs Js code in the component scope
+Run JS code under the component scope. The provided callback will have
+access to the `this` JavaScript property as if running in the component root.
 }

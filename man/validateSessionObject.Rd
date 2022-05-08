@@ -18,7 +18,7 @@ validateSessionObject(
 No return value, called for side effects.
 }
 \description{
-Check that an object is a ShinySession object, and give an informative error.
+Check that an object is a ShinySession object, and give an informative
 }
 \keyword{internal}
 \keyword{utils}

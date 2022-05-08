@@ -2,16 +2,23 @@
 % Please edit documentation in R/components.R
 \name{registerComponent}
 \alias{registerComponent}
-\title{Adds the given element into the components list}
+\title{Register a component.}
 \usage{
 registerComponent(componentClass, innerHTML)
 }
 \arguments{
-\item{componentClass}{A unique identifier for the component template. Used later to
-generate instances of the component. Acts similar to a class identifier.}
+\item{componentClass}{A unique identifier for the component template. Used
+later to generate instances of the component. Most be unique among all
+registered components. If the componentClass provided is already used,
+it will overwrite the current registered componentClass.}
 
-\item{innerHTML}{The HTML structure of the component}
+\item{innerHTML}{The HTML structure of the component.}
+}
+\value{
+No return value, called for side effects.
 }
 \description{
-Adds the given element into the components list
+Registers a component template to make it available globally. After
+registered its componentClass can be used with [useComponent()].
 }
+\keyword{components}
