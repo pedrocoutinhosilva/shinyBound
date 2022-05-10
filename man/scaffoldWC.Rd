@@ -4,14 +4,14 @@
 \alias{scaffoldWC}
 \title{Generate a shiny bound component.}
 \usage{
-scaffoldWC(inputId, innerHTML, webClassName, htmlTagName, initialState, ...)
+scaffoldWC(inputId, innerHTML, htmlClassName, htmlTagName, initialState, ...)
 }
 \arguments{
 \item{inputId}{Component Id}
 
 \item{innerHTML}{A valid HTML fragment to use as the component shadow DOM}
 
-\item{webClassName}{A valid web class name to use in the template}
+\item{htmlClassName}{A valid web class name to use in the template}
 
 \item{htmlTagName}{A valid HTML tag name to use in the template}
 

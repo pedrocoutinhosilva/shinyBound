@@ -6,7 +6,7 @@
 \usage{
 webComponentBindings(
   template,
-  webClassName,
+  htmlClassName,
   htmlTagName,
   innerHTML,
   initialState
@@ -15,7 +15,7 @@ webComponentBindings(
 \arguments{
 \item{template}{Path to an HTML template file}
 
-\item{webClassName}{A valid web class name to use in the template}
+\item{htmlClassName}{A valid web class name to use in the template}
 
 \item{htmlTagName}{A valid HTML tag name to use in the template}
 

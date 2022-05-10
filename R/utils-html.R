@@ -47,7 +47,7 @@ htmlTagName <- function(string) {
 #' @importFrom magrittr "%>%"
 #'
 #' @return A valid class name (letters only, no spaces).
-webClassName <- function(string) {
+htmlClassName <- function(string) {
   if(!(is.character(string) && length(string) == 1))
     stop("Error: String arg must be a character string")
 
@@ -187,7 +187,7 @@ tagAppendBinds <- function(tag,
     stop("tag argument must be a valid HTML tag")
 
   arguments <- environment() %>% as.list()
-  arguments$tag = NULL
+  arguments$tag <- NULL
 
   for (type in c("Property", "Style", "Attribute", "Class", "Event")) {
     arguments[paste0("fromShiny", type)] <- ifelse(
@@ -197,11 +197,15 @@ tagAppendBinds <- function(tag,
     )
     arguments[paste0("toShiny", type)] <- ifelse(
       is.null(arguments[paste0("toShiny", type)]),
-      arguments[paste0("to", type)],
+      arguments[paste0("ts", type)],
       arguments[paste0("toShiny", type)]
     )
+
+    arguments[paste0("fs", type)] <- NULL
+    arguments[paste0("ts", type)] <- NULL
   }
-  arguments %<>% dropNulls()
+  arguments %<>%
+    dropNulls()
 
   attributes <- list()
   for(name in names(arguments)) {

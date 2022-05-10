@@ -39,6 +39,7 @@ class {{className}} extends HTMLElement {
     const shadowRoot = this.attachShadow({mode: 'open'});
     shadowRoot.innerHTML = `<div>{{innerHTML}}</div>`;
 
+    // Automatically slots ui outputs from shiny
     this.autoSlots.map((selector) => [ ...this.selectAll(selector)])
       .flat()
       .forEach(node => {
@@ -81,12 +82,12 @@ class {{className}} extends HTMLElement {
     this.setState(this.initialState);
   }
 
+  // Triggered when the element is added to the page
   connectedCallback() {
-    console.log('Custom square element added to page.');
-    console.log(document);
-    console.log(this.shadowRoot);
+    console.log('Custom element added to page.');
   }
 
+  // Triggered when the element is removed to the page
   disconnectedCallback() {
     console.log('Custom element removed from page.');
   }
@@ -107,8 +108,6 @@ class {{className}} extends HTMLElement {
 
     this.dispatchEvent(this.updatedEvent);
   }
-
-
 
   // Parses and returns a single object with values representing the web component
   // state based on all the bindings defined in the component HTML

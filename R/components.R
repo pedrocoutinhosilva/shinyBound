@@ -63,7 +63,7 @@ useComponent <- function(inputId, componentClass, defaultState, ...) {
   scaffoldWC(
     inputId = inputId,
     innerHTML = getComponent(componentClass)$innerHTML,
-    webClassName = webClassName(htmlTagName),
+    htmlClassName = htmlClassName(htmlTagName),
     htmlTagName = htmlTagName,
     initialState = defaultState,
     ...
@@ -86,9 +86,9 @@ useComponent <- function(inputId, componentClass, defaultState, ...) {
 #' @export
 component <- function(inputId, innerHTML, defaultState, ...) {
   htmlTagName <- htmlTagName(inputId)
-  webClassName <- webClassName(htmlTagName)
+  htmlClassName <- htmlClassName(htmlTagName)
 
-  scaffoldWC(inputId,  innerHTML, webClassName, htmlTagName, defaultState, ...)
+  scaffoldWC(inputId,  innerHTML, htmlClassName, htmlTagName, defaultState, ...)
 }
 
 #' Update a component state.
