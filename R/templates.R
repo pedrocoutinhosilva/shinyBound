@@ -136,6 +136,31 @@ scaffoldWC <- function(inputId,
     read_html() %>%
     html_nodes("script")
 
+  # Extract script tags to be parsed differently
+  slot_names <- innerHTML %>%
+    toString() %>%
+    HTML() %>%
+    read_html() %>%
+    html_nodes("slot") %>%
+    html_attrs() %>%
+    lapply(\(node) { node[["name"]] }) %>%
+    unlist(use.names = FALSE)
+
+  wc_tag_arguments <- list(...)
+
+  for (name in slot_names) {
+    slot_in <- slotted(name, wc_tag_arguments[[name]])
+
+    wc_tag_arguments[[name]] <- NULL
+
+    browser()
+
+    wc_tag_arguments <- c(wc_tag_arguments, slot_in)
+  }
+
+  browser()
+
+
   # Remove script tags from the full content
   innerHTML %<>%
     toString() %>%
@@ -206,7 +231,7 @@ scaffoldWC <- function(inputId,
       htmlClassName,
       htmlTagName
     ),
-    webComponentTag(htmlTagName, inputId, ...),
+    webComponentTag(htmlTagName, inputId, wc_tag_arguments),
     tags$head(HTML(paste0(autoSlotScripts, collapse = " ")))
   )
 }
