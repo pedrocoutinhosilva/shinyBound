@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils-html.R
 \name{tagAppendBinds}
 \alias{tagAppendBinds}
-\title{Add shinybound binds to tag.}
+\title{Add shinyBound binds to tag.}
 \usage{
 tagAppendBinds(
   tag,

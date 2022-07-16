@@ -7,7 +7,7 @@
 #' @param x The object to process. Non list or vector objects are returned
 #'   with no changes.
 #'
-#' @return The give object x with all NULL entries removed
+#' @return The give object x with all NULL entries removed.
 #' @keywords utils internal
 dropNulls <- function(x) {
   x[!vapply(x, is.null, FUN.VALUE = logical(1))]
@@ -36,9 +36,9 @@ is.ShinySession <- function(object) {
 #' @return No return value, called for side effects.
 #' @keywords utils internal
 validateSessionObject <- function (session,
-                                     label = as.character(
-                                       sys.call(sys.parent())[[1]])
-                                     ) {
+                                   label = as.character(
+                                     sys.call(sys.parent())[[1]])
+                                   ) {
   if (missing(session) || !is.ShinySession(session)) {
     message <- paste(
       "`session` must be a 'ShinySession' object.",

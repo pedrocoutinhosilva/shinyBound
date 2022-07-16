@@ -15,12 +15,12 @@
 #'
 #' @export
 registerComponent <- function(componentClass, innerHTML) {
-  components <- getOption("shinywebcomponents.components")
+  components <- getOption("shinyBound.components")
   components[[componentClass]] <- list(
     innerHTML = innerHTML
   )
 
-  options(shinywebcomponents.components = components)
+  options(shinyBound.components = components)
 }
 
 #' Get a registered component.
@@ -35,11 +35,11 @@ registerComponent <- function(componentClass, innerHTML) {
 getComponent <- function(componentClass) {
   stopifnot(
     "No registered component with given componentClass" = {
-      componentClass %in% names(getOption("shinywebcomponents.components"))
+      componentClass %in% names(getOption("shinyBound.components"))
     }
   )
 
-  getOption("shinywebcomponents.components")[[componentClass]]
+  getOption("shinyBound.components")[[componentClass]]
 }
 
 #' Use a registered component.
@@ -53,7 +53,7 @@ getComponent <- function(componentClass) {
 #'   registerWebComponent to register the component.
 #' @param defaultState Initial state for the component
 #' @param ... Aditional attributes to be added to the component HTML tag or/and
-#'   slotted components
+#'   slotIn components
 #'
 #' @return A HTML tagList.
 #' @export

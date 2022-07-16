@@ -136,6 +136,26 @@ scaffoldWC <- function(inputId,
     read_html() %>%
     html_nodes("script")
 
+  # Extract script tags to be parsed differently
+  slot_names <- innerHTML %>%
+    toString() %>%
+    HTML() %>%
+    read_html() %>%
+    html_nodes("slot") %>%
+    html_attrs() %>%
+    lapply(\(node) { node[["name"]] }) %>%
+    unlist(use.names = FALSE)
+
+  wc_tag_arguments <- list(...)
+
+  for (name in slot_names) {
+    slot_in <- slotIn(name, wc_tag_arguments[[name]])
+
+    wc_tag_arguments[[name]] <- NULL
+
+    wc_tag_arguments <- c(wc_tag_arguments, slot_in)
+  }
+
   # Remove script tags from the full content
   innerHTML %<>%
     toString() %>%
@@ -143,7 +163,7 @@ scaffoldWC <- function(inputId,
 
   # scripts folder
   # TODO switch to html dep
-  dep_dir <- file.path(tempdir(), "www", "shinybound", "wc", inputId)
+  dep_dir <- file.path(tempdir(), "www", "shinyBound", "wc", inputId)
   web_dir <- file.path("wc", inputId)
 
   dir.create(dep_dir, recursive = TRUE, showWarnings = FALSE)
@@ -186,27 +206,27 @@ scaffoldWC <- function(inputId,
 
   tagList(
     htmltools::htmlDependency(
-      name = "shinybound",
+      name = "shinyBound",
       version = "0.1.0",
       src = list(file = "dependencies"),
-      package = "shinybound",
+      package = "shinyBound",
       script = c(
         "shinyBound.js"
       )
     ),
     webComponentBindings(
-      system.file("templates/webcomponent-stateful.js", package = "shinybound"),
+      system.file("templates/webcomponent-stateful.js", package = "shinyBound"),
       htmlClassName,
       htmlTagName,
       innerHTML %>% replacePlaceholders(inputId),
       initialState
     ),
     shinyBindings(
-      system.file("templates/shiny-bindings.js", package = "shinybound"),
+      system.file("templates/shiny-bindings.js", package = "shinyBound"),
       htmlClassName,
       htmlTagName
     ),
-    webComponentTag(htmlTagName, inputId, ...),
+    htmlComponentTag(htmlTagName, inputId, wc_tag_arguments),
     tags$head(HTML(paste0(autoSlotScripts, collapse = " ")))
   )
 }

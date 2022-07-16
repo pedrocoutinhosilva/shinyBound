@@ -15,7 +15,7 @@ registerWebComponent to register the component.}
 \item{defaultState}{Initial state for the component}
 
 \item{...}{Aditional attributes to be added to the component HTML tag or/and
-slotted components}
+slotIn components}
 }
 \value{
 A HTML tagList.

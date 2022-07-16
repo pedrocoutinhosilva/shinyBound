@@ -1,5 +1,5 @@
 library(shiny)
-library(shinybound)
+library(shinyBound)
 
 # https://www.webcomponents.org/element/@honatas/multi-select-webcomponent
 
@@ -13,6 +13,7 @@ registerComponent("fancyDropdown",
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <label fsProperty="innerHTML:content" for="planetId" class="form-label p-0">Planets</label>
     <span><slot name = "time"></span>
+    <span><slot name = "time2"></span>
     <multi-select fsProperty="disabled" id="planetIds" class="border"
       tsProperty="value"
       tsEvent="change"
@@ -42,7 +43,9 @@ ui <- fluidPage(
     '),
   useComponent("testID", "fancyDropdown",
     list(content = "init label"),
-    slotted("time", Sys.Date())
+    myAttribute = "test",
+    time = Sys.Date(),
+    time2 = Sys.Date()
   ),
   actionButton("update", "Action button")
 )
