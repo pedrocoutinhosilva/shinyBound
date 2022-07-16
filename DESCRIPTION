@@ -17,5 +17,12 @@ Imports:
     stringr,
     glue
 Suggests:
-  testthat
+    testthat (>= 3.0.0),
+    rvest,
+    devtools,
+    covr,
+    rmarkdown,
+    knitr
 RoxygenNote: 7.1.2
+Config/testthat/edition: 3
+Language: en-US
