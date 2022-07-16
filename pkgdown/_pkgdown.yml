@@ -1,0 +1,33 @@
+home:
+  title: shinyBound - Easy shiny bindings directly from HTML
+
+template:
+  assets: vignettes/assets
+  bootstrap: 5
+  bslib:
+    primary: "#0e7fc0"
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+  includes:
+    in_header: |
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-QP70RD2V5K"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-QP70RD2V5K');
+      </script>
+authors:
+  Pedro Silva:
+    href: https://pedrocsilva.com
+
+navbar:
+  right:
+    - text: demos
+      href: articles/shinybound-demos.html
+    - icon: fa-github fa-lg
+      href: https://github.com/pedrocoutinhosilva/shinybound
+    - icon: fa-twitter fa-lg
+      href: https://twitter.com/sparktuga
