@@ -1,5 +1,5 @@
 library(shiny)
-library(shinybound)
+library(shinyBound)
 
 # Define UI for application
 ui <- fluidPage(

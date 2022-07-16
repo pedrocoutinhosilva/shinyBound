@@ -168,7 +168,7 @@ scaffoldWC <- function(inputId,
 
   # scripts folder
   # TODO switch to html dep
-  dep_dir <- file.path(tempdir(), "www", "shinybound", "wc", inputId)
+  dep_dir <- file.path(tempdir(), "www", "shinyBound", "wc", inputId)
   web_dir <- file.path("wc", inputId)
 
   dir.create(dep_dir, recursive = TRUE, showWarnings = FALSE)
@@ -211,23 +211,23 @@ scaffoldWC <- function(inputId,
 
   tagList(
     htmltools::htmlDependency(
-      name = "shinybound",
+      name = "shinyBound",
       version = "0.1.0",
       src = list(file = "dependencies"),
-      package = "shinybound",
+      package = "shinyBound",
       script = c(
         "shinyBound.js"
       )
     ),
     webComponentBindings(
-      system.file("templates/webcomponent-stateful.js", package = "shinybound"),
+      system.file("templates/webcomponent-stateful.js", package = "shinyBound"),
       htmlClassName,
       htmlTagName,
       innerHTML %>% replacePlaceholders(inputId),
       initialState
     ),
     shinyBindings(
-      system.file("templates/shiny-bindings.js", package = "shinybound"),
+      system.file("templates/shiny-bindings.js", package = "shinyBound"),
       htmlClassName,
       htmlTagName
     ),

@@ -1,6 +1,6 @@
 library(shiny)
 library(imola)
-library(shinybound)
+library(shinyBound)
 
 # https://github.com/thecreazy/framework-webcomponents/
 

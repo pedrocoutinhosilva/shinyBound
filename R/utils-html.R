@@ -110,7 +110,7 @@ slotted <- function(name, ...) {
   div(slot = name, ...)
 }
 
-#' Add shinybound binds to tag.
+#' Add shinyBound binds to tag.
 #'
 #' @description
 #' Links diferent bindings to the given tag. For all list arguments, instead of

@@ -1,5 +1,5 @@
 library(shiny)
-library(shinybound)
+library(shinyBound)
 
 # https://www.webcomponents.org/element/@honatas/multi-select-webcomponent
 

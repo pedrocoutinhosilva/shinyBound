@@ -1,6 +1,6 @@
 library(shiny)
 library(imola)
-library(shinybound)
+library(shinyBound)
 
 # https://www.fast.design/docs/components/getting-started/
 
