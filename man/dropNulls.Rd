@@ -11,7 +11,7 @@ dropNulls(x)
 with no changes.}
 }
 \value{
-The give object x with all NULL entries removed
+The give object x with all NULL entries removed.
 }
 \description{
 Removes null values from a given list or vector. If the given object is of

@@ -15,7 +15,11 @@ Imports:
     magrittr,
     jsonlite,
     stringr,
-    glue
+    rvest,
+    stringi,
+    httr,
+    readr,
+    xml2
 Suggests:
     testthat (>= 3.0.0),
     rvest,

@@ -20,3 +20,5 @@ A HTML tagList.
 Generates a HTML custom tag with a defined ID, content and attributes.
 Used in scaffoldWC().
 }
+\keyword{html}
+\keyword{internal}
