@@ -149,17 +149,12 @@ scaffoldWC <- function(inputId,
   wc_tag_arguments <- list(...)
 
   for (name in slot_names) {
-    slot_in <- slotted(name, wc_tag_arguments[[name]])
+    slot_in <- slotIn(name, wc_tag_arguments[[name]])
 
     wc_tag_arguments[[name]] <- NULL
 
-    browser()
-
     wc_tag_arguments <- c(wc_tag_arguments, slot_in)
   }
-
-  browser()
-
 
   # Remove script tags from the full content
   innerHTML %<>%
@@ -231,7 +226,7 @@ scaffoldWC <- function(inputId,
       htmlClassName,
       htmlTagName
     ),
-    webComponentTag(htmlTagName, inputId, wc_tag_arguments),
+    htmlComponentTag(htmlTagName, inputId, wc_tag_arguments),
     tags$head(HTML(paste0(autoSlotScripts, collapse = " ")))
   )
 }

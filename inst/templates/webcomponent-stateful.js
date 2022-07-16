@@ -9,7 +9,7 @@ class {{className}} extends HTMLElement {
   };
 
   // Query selectors for template tags that should be automatically be treated as
-  // slotted elements (For compatibility with existing shiny components)
+  // slotIn elements (For compatibility with existing shiny components)
   autoSlots = [
     ".shiny-html-output",
     ".shiny-input-container",

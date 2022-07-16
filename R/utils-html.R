@@ -12,7 +12,8 @@
 #' @importFrom htmltools tag
 #'
 #' @return A HTML tagList.
-webComponentTag <- function(htmlTagName, inputId, ...) {
+#' @keywords html internal
+htmlComponentTag <- function(htmlTagName, inputId, ...) {
   htmlTagName %>% tag(list(
     id = inputId,
     class = paste("shinywc-component", htmlTagName),
@@ -30,6 +31,7 @@ webComponentTag <- function(htmlTagName, inputId, ...) {
 #' @importFrom magrittr "%>%"
 #'
 #' @return A valid HTML tag name.
+#' @keywords html internal
 htmlTagName <- function(string) {
   string %>%
     tolower() %>%
@@ -46,7 +48,8 @@ htmlTagName <- function(string) {
 #'
 #' @importFrom magrittr "%>%"
 #'
-#' @return A valid class name (letters only, no spaces).
+#' @return A valid HTML class name (letters only, no spaces).
+#' @keywords html internal
 htmlClassName <- function(string) {
   if(!(is.character(string) && length(string) == 1))
     stop("Error: String arg must be a character string")
@@ -95,18 +98,18 @@ slot <- function(name) {
 #' Slot into component slot.
 #'
 #' @description
-#' Wraps a given HTML tag into a valid HTML element what can be slotted into a
+#' Wraps a given HTML tag into a valid HTML element what can be slotIn into a
 #' specific slot in a web component.
 #'
 #' @param name The web component slot where the element should be added.
-#' @param ... The content and attributes to be slotted into the web component.
+#' @param ... The content and attributes to be slotIn into the web component.
 #'
 #' @importFrom shiny tags
 #' @importFrom shiny div
 #'
 #' @return a HTML tag that can be added to the page.
 #' @export
-slotted <- function(name, ...) {
+slotIn <- function(name, ...) {
   div(slot = name, ...)
 }
 
@@ -231,8 +234,13 @@ tagAppendBinds <- function(tag,
     do.call(modifyList(list(tag), attributes))
 }
 
+#' Converts bind argument names to html data attributes.
+#'
 #' @importFrom stringr str_replace_all
 #' @importFrom shiny HTML
+#'
+#' @return A HTML tagList.
+#' @keywords html internal
 replacePlaceholders <- function(html, id) {
   suppressWarnings({
     str_replace_all(html, c(
