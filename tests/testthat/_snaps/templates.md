@@ -1588,7 +1588,7 @@
 
     Code
       htmltools::doRenderTags(shinyBound:::scaffoldWC("testId",
-        "<script src='https://www.anatomyofcode.com/shinybound/deps/jquery-3.6.0/jquery-3.6.0.min.js'><div></div>",
+        "<script src='https://www.anatomyofcode.com/shinyBound/deps/jquery-3.6.0/jquery-3.6.0.min.js'><div></div>",
         "testClass", "testTag", NULL))
     Message <simpleMessage>
       No encoding supplied: defaulting to UTF-8.
@@ -1633,7 +1633,7 @@
           // HTML content for the web component. Runs in open JS mode to allow
           // external javascript code (including shiny code) to access the shadow DOM
           const shadowRoot = this.attachShadow({mode: 'open'});
-          shadowRoot.innerHTML = `<div><script src='https://www.anatomyofcode.com/shinybound/deps/jquery-3.6.0/jquery-3.6.0.min.js'><div></div></div>`;
+          shadowRoot.innerHTML = `<div><script src='https://www.anatomyofcode.com/shinyBound/deps/jquery-3.6.0/jquery-3.6.0.min.js'><div></div></div>`;
       
           // Automatically slots ui outputs from shiny
           this.autoSlots.map((selector) => [ ...this.selectAll(selector)])
@@ -1976,7 +1976,7 @@
 
     Code
       htmltools::doRenderTags(shinyBound:::scaffoldWC("testId",
-        "<script src='https://www.anatomyofcode.com/shinybound/deps/nope.js'><div></div>",
+        "<script src='https://www.anatomyofcode.com/shinyBound/deps/nope.js'><div></div>",
         "testClass", "testTag", NULL))
     Output
       <head>
@@ -2019,7 +2019,7 @@
           // HTML content for the web component. Runs in open JS mode to allow
           // external javascript code (including shiny code) to access the shadow DOM
           const shadowRoot = this.attachShadow({mode: 'open'});
-          shadowRoot.innerHTML = `<div><script src='https://www.anatomyofcode.com/shinybound/deps/nope.js'><div></div></div>`;
+          shadowRoot.innerHTML = `<div><script src='https://www.anatomyofcode.com/shinyBound/deps/nope.js'><div></div></div>`;
       
           // Automatically slots ui outputs from shiny
           this.autoSlots.map((selector) => [ ...this.selectAll(selector)])
@@ -2356,5 +2356,5 @@
       </script>
       </head>
       <testTag id="testId" class="shinywc-component testTag"></testTag>
-      <head><script src="https://www.anatomyofcode.com/shinybound/deps/nope.js"><div></div></script></head>
+      <head><script src="https://www.anatomyofcode.com/shinyBound/deps/nope.js"><div></div></script></head>
 

@@ -26,8 +26,8 @@ authors:
 navbar:
   right:
     - text: demos
-      href: articles/shinybound-demos.html
+      href: articles/shinyBound-demos.html
     - icon: fa-github fa-lg
-      href: https://github.com/pedrocoutinhosilva/shinybound
+      href: https://github.com/pedrocoutinhosilva/shinyBound
     - icon: fa-twitter fa-lg
       href: https://twitter.com/sparktuga

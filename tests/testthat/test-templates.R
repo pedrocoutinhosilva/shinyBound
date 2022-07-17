@@ -80,7 +80,7 @@ test_that("Test scaffoldWC", {
   expect_snapshot(
     htmltools::doRenderTags(shinyBound:::scaffoldWC(
       "testId",
-      "<script src='https://www.anatomyofcode.com/shinybound/deps/jquery-3.6.0/jquery-3.6.0.min.js'><div></div>",
+      "<script src='https://www.anatomyofcode.com/shinyBound/deps/jquery-3.6.0/jquery-3.6.0.min.js'><div></div>",
       "testClass",
       "testTag",
       NULL
@@ -89,7 +89,7 @@ test_that("Test scaffoldWC", {
   expect_snapshot(
     htmltools::doRenderTags(shinyBound:::scaffoldWC(
       "testId",
-      "<script src='https://www.anatomyofcode.com/shinybound/deps/nope.js'><div></div>",
+      "<script src='https://www.anatomyofcode.com/shinyBound/deps/nope.js'><div></div>",
       "testClass",
       "testTag",
       NULL

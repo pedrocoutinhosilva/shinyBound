@@ -16,3 +16,4 @@ A component object.
 Returns a object form of a registered component by its componentClass.
 }
 \keyword{components}
+\keyword{internal}
