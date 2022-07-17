@@ -4,7 +4,7 @@
 \alias{component}
 \title{Create a component.}
 \usage{
-component(inputId, innerHTML, defaultState, ...)
+component(inputId, innerHTML, defaultState = NULL, ...)
 }
 \arguments{
 \item{inputId}{The `input` slot that will be used to access the value.}

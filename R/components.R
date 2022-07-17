@@ -97,7 +97,7 @@ getComponent <- function(componentClass) {
 #'
 #' @return A HTML tagList.
 #' @export
-useComponent <- function(inputId, componentClass, defaultState, ...) {
+useComponent <- function(inputId, componentClass, defaultState = NULL, ...) {
   htmlWCTagName <- htmlWCTagName(paste0(componentClass, inputId))
 
   scaffoldWC(
@@ -124,7 +124,7 @@ useComponent <- function(inputId, componentClass, defaultState, ...) {
 #'
 #' @return A HTML tagList.
 #' @export
-component <- function(inputId, innerHTML, defaultState, ...) {
+component <- function(inputId, innerHTML, defaultState = NULL, ...) {
   htmlWCTagName <- htmlWCTagName(inputId)
   htmlClassName <- htmlClassName(htmlWCTagName)
 

@@ -85,6 +85,7 @@ class {{className}} extends HTMLElement {
   // Triggered when the element is added to the page
   connectedCallback() {
     console.log('Custom element added to page.');
+    this.style.opacity = 1;
   }
 
   // Triggered when the element is removed to the page

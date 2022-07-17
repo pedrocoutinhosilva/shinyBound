@@ -4,7 +4,7 @@
 \alias{useComponent}
 \title{Use a registered component.}
 \usage{
-useComponent(inputId, componentClass, defaultState, ...)
+useComponent(inputId, componentClass, defaultState = NULL, ...)
 }
 \arguments{
 \item{inputId}{The input slot that will be used to access the value}

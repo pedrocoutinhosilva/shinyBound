@@ -137,6 +137,13 @@ scaffoldWC <- function(inputId,
     html_nodes("script")
 
   # Extract script tags to be parsed differently
+  head_nodes <- innerHTML %>%
+    toString() %>%
+    HTML() %>%
+    read_html() %>%
+    html_nodes("head")
+
+  # Extract script tags to be parsed differently
   slot_names <- innerHTML %>%
     toString() %>%
     HTML() %>%
@@ -152,14 +159,14 @@ scaffoldWC <- function(inputId,
     slot_in <- slotIn(name, wc_tag_arguments[[name]])
 
     wc_tag_arguments[[name]] <- NULL
-
     wc_tag_arguments <- c(wc_tag_arguments, slot_in)
   }
 
   # Remove script tags from the full content
   innerHTML %<>%
     toString() %>%
-    str_replace_all("<script((.|\\s)*?)\\/script>", "")
+    str_replace_all("<script((.|\\s)*?)\\/script>", "") %>%
+    str_replace_all("<head((.|\\s)*?)\\/head>", "")
 
   # scripts folder
   # TODO switch to html dep
@@ -212,6 +219,9 @@ scaffoldWC <- function(inputId,
       package = "shinyBound",
       script = c(
         "shinyBound.js"
+      ),
+      stylesheet = c(
+        "shinyBound.css"
       )
     ),
     webComponentBindings(
@@ -227,6 +237,7 @@ scaffoldWC <- function(inputId,
       htmlWCTagName
     ),
     htmlComponentTag(htmlWCTagName, inputId, wc_tag_arguments),
-    tags$head(HTML(paste0(autoSlotScripts, collapse = " ")))
+    tags$head(HTML(paste0(autoSlotScripts, collapse = " "))),
+    tags$head(HTML(paste0(head_nodes, collapse = " ")))
   )
 }
