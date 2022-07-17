@@ -31,6 +31,8 @@ class {{className}} extends HTMLElement {
   // only passed to the shiny input variable if requested in the bindings
   eventCounters = {};
 
+  loadComplete = false;
+
   constructor() {
     super();
 
@@ -73,7 +75,9 @@ class {{className}} extends HTMLElement {
             this.eventCounters[event.type] = this.eventCounters.hasOwnProperty(event.type)
               ? this.eventCounters[event.type] + 1
               : 1
-            this.dispatchEvent(this.updatedEvent);
+            if (this.loadComplete) {
+              this.dispatchEvent(this.updatedEvent);
+            }
           };
         })
     })
@@ -107,7 +111,9 @@ class {{className}} extends HTMLElement {
         bindKeys.forEach(key => this.updateBindings(key, value));
     });
 
-    this.dispatchEvent(this.updatedEvent);
+    if (this.loadComplete) {
+      this.dispatchEvent(this.updatedEvent);
+    }
   }
 
   // Parses and returns a single object with values representing the web component
