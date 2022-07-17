@@ -4,14 +4,14 @@
 \alias{shinyBindings}
 \title{Generate a Shiny Bind.}
 \usage{
-shinyBindings(template, htmlClassName, htmlTagName)
+shinyBindings(template, htmlClassName, htmlWCTagName)
 }
 \arguments{
 \item{template}{Path to an HTML template file}
 
 \item{htmlClassName}{A valid web class name to use in the template}
 
-\item{htmlTagName}{A valid HTML tag name to use in the template}
+\item{htmlWCTagName}{A valid HTML tag name to use in the template}
 }
 \value{
 A HTML tagList.

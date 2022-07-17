@@ -22,6 +22,7 @@ jobs:
           extra-packages: |
             covr
             rvest
+            htmltools
             rstudio/webshot2
       - name: Test coverage
         run: |

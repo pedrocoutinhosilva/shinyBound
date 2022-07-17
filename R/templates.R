@@ -33,7 +33,7 @@ createDependency <- function(content, scope = "local", type = "script") {
 #'
 #' @param template Path to an HTML template file
 #' @param htmlClassName A valid web class name to use in the template
-#' @param htmlTagName A valid HTML tag name to use in the template
+#' @param htmlWCTagName A valid HTML tag name to use in the template
 #'
 #' @importFrom magrittr "%>%"
 #' @importFrom htmltools htmlTemplate
@@ -41,10 +41,10 @@ createDependency <- function(content, scope = "local", type = "script") {
 #' @importFrom shiny singleton
 #'
 #' @return A HTML tagList.
-shinyBindings <- function(template, htmlClassName, htmlTagName) {
+shinyBindings <- function(template, htmlClassName, htmlWCTagName) {
   options <- list(
     className = htmlClassName,
-    htmlTagName = htmlTagName
+    htmlWCTagName = htmlWCTagName
   )
 
   htmlTemplate %>%
@@ -61,7 +61,7 @@ shinyBindings <- function(template, htmlClassName, htmlTagName) {
 #'
 #' @param template Path to an HTML template file
 #' @param htmlClassName A valid web class name to use in the template
-#' @param htmlTagName A valid HTML tag name to use in the template
+#' @param htmlWCTagName A valid HTML tag name to use in the template
 #' @param innerHTML A valid HTML fragment to use as the component shadow DOM
 #' @param initialState Initial state of the component binds
 #'
@@ -75,7 +75,7 @@ shinyBindings <- function(template, htmlClassName, htmlTagName) {
 #' @return A HTML tagList.
 webComponentBindings <- function(template,
                                  htmlClassName,
-                                 htmlTagName,
+                                 htmlWCTagName,
                                  innerHTML,
                                  initialState) {
   initialState %<>%
@@ -84,7 +84,7 @@ webComponentBindings <- function(template,
 
   options <- list(
     className = htmlClassName,
-    tagName = htmlTagName,
+    tagName = htmlWCTagName,
     innerHTML = innerHTML,
     initialState = initialState
   )
@@ -104,7 +104,7 @@ webComponentBindings <- function(template,
 #' @param inputId Component Id
 #' @param innerHTML A valid HTML fragment to use as the component shadow DOM
 #' @param htmlClassName A valid web class name to use in the template
-#' @param htmlTagName A valid HTML tag name to use in the template
+#' @param htmlWCTagName A valid HTML tag name to use in the template
 #' @param initialState Initial state of the component binds
 #' @param ... Attributes and content of the web component HTML wrapper tag
 #'
@@ -125,7 +125,7 @@ webComponentBindings <- function(template,
 scaffoldWC <- function(inputId,
                        innerHTML,
                        htmlClassName,
-                       htmlTagName,
+                       htmlWCTagName,
                        initialState,
                        ...) {
 
@@ -217,16 +217,16 @@ scaffoldWC <- function(inputId,
     webComponentBindings(
       system.file("templates/webcomponent-stateful.js", package = "shinyBound"),
       htmlClassName,
-      htmlTagName,
+      htmlWCTagName,
       innerHTML %>% replacePlaceholders(inputId),
       initialState
     ),
     shinyBindings(
       system.file("templates/shiny-bindings.js", package = "shinyBound"),
       htmlClassName,
-      htmlTagName
+      htmlWCTagName
     ),
-    htmlComponentTag(htmlTagName, inputId, wc_tag_arguments),
+    htmlComponentTag(htmlWCTagName, inputId, wc_tag_arguments),
     tags$head(HTML(paste0(autoSlotScripts, collapse = " ")))
   )
 }

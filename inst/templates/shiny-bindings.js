@@ -1,7 +1,7 @@
 var {{className}}InputBinding = new Shiny.InputBinding();
 $.extend({{className}}InputBinding, {
   find: function(scope) {
-    return $(scope).find("{{htmlTagName}}");
+    return $(scope).find("{{htmlWCTagName}}");
   },
   getValue: function(el) {
     return !!el.getState ? el.getState() : null;

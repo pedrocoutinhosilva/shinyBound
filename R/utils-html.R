@@ -4,7 +4,7 @@
 #' Generates a HTML custom tag with a defined ID, content and attributes.
 #' Used in scaffoldWC().
 #'
-#' @param htmlTagName A valid HTML tag name to use in the template
+#' @param htmlWCTagName A valid HTML tag name to use in the template
 #' @param inputId The tag ID attribute
 #' @param ... Attributes and content of the web component HTML wrapper tag
 #'
@@ -13,10 +13,10 @@
 #'
 #' @return A HTML tagList.
 #' @keywords html internal
-htmlComponentTag <- function(htmlTagName, inputId, ...) {
-  htmlTagName %>% tag(list(
+htmlComponentTag <- function(htmlWCTagName, inputId, ...) {
+  htmlWCTagName %>% tag(list(
     id = inputId,
-    class = paste("shinywc-component", htmlTagName),
+    class = paste("shinywc-component", htmlWCTagName),
     ...
   ))
 }
@@ -32,10 +32,16 @@ htmlComponentTag <- function(htmlTagName, inputId, ...) {
 #'
 #' @return A valid HTML tag name.
 #' @keywords html internal
-htmlTagName <- function(string) {
+htmlWCTagName <- function(string) {
+  if (!nzchar(string)) {
+    stop("Error: String arg must be a character string")
+  }
+
+
   string %>%
     tolower() %>%
     paste(sep = "-") %>%
+    gsub(" ", "-", .) %>%
     paste0("wc-", .)
 }
 
@@ -51,8 +57,9 @@ htmlTagName <- function(string) {
 #' @return A valid HTML class name (letters only, no spaces).
 #' @keywords html internal
 htmlClassName <- function(string) {
-  if(!(is.character(string) && length(string) == 1))
+  if(!nzchar(string)) {
     stop("Error: String arg must be a character string")
+  }
 
   partials <- string %>%
     strsplit("[- ]+") %>%
@@ -186,20 +193,22 @@ tagAppendBinds <- function(tag,
                            toShinyEvent = NULL,
                            tsEvent = NULL) {
 
-  if (!identical(names(tag), names(div())))
+  if (!identical(names(tag), names(div()))) {
     stop("tag argument must be a valid HTML tag")
+  }
 
-  arguments <- environment() %>% as.list()
+  arguments <- environment() %>%
+    as.list()
   arguments$tag <- NULL
 
   for (type in c("Property", "Style", "Attribute", "Class", "Event")) {
     arguments[paste0("fromShiny", type)] <- ifelse(
-      is.null(arguments[paste0("fromShiny", type)]),
+      is.null(arguments[[paste0("fromShiny", type)]]),
       arguments[paste0("fs", type)],
       arguments[paste0("fromShiny", type)]
     )
     arguments[paste0("toShiny", type)] <- ifelse(
-      is.null(arguments[paste0("toShiny", type)]),
+      is.null(arguments[[paste0("toShiny", type)]]),
       arguments[paste0("ts", type)],
       arguments[paste0("toShiny", type)]
     )
@@ -207,27 +216,34 @@ tagAppendBinds <- function(tag,
     arguments[paste0("fs", type)] <- NULL
     arguments[paste0("ts", type)] <- NULL
   }
+
   arguments %<>%
     dropNulls()
 
   attributes <- list()
   for(name in names(arguments)) {
-    parsedName <- name %>%
-      gsub('([[:upper:]])', '-\\1', .) %>%
+    parsed_name <- name %>%
+      gsub("([[:upper:]])", "-\\1", .) %>%
       tolower() %>%
       paste0("data-", .)
 
     if (is.character(arguments[[name]]))
-      attributes[[parsedName]] <- arguments[[name]]
+      attributes[[parsed_name]] <- arguments[[name]]
 
     else
-      attributes[[parsedName]] <- seq_len(length(arguments[[name]])) %>%
+      attributes[[parsed_name]] <- seq_len(length(arguments[[name]])) %>%
         lapply(. %>% {
           if (identical(names(arguments[[name]][.])[[1]], "") ||
-              is.null(names(arguments[[name]][.])[[1]]))
+              is.null(names(arguments[[name]][.])[[1]])) {
             return(arguments[[name]][[.]])
-          paste(names(arguments[[name]][.])[[1]], arguments[[name]][[.]], sep = ":")
-        }) %>% paste(collapse = "|")
+          }
+          paste(
+            names(arguments[[name]][.])[[1]],
+            arguments[[name]][[.]],
+            sep = ":"
+          )
+        }) %>%
+        paste(collapse = "|")
   }
 
   tagAppendAttributes %>%

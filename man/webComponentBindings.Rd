@@ -7,7 +7,7 @@
 webComponentBindings(
   template,
   htmlClassName,
-  htmlTagName,
+  htmlWCTagName,
   innerHTML,
   initialState
 )
@@ -17,7 +17,7 @@ webComponentBindings(
 
 \item{htmlClassName}{A valid web class name to use in the template}
 
-\item{htmlTagName}{A valid HTML tag name to use in the template}
+\item{htmlWCTagName}{A valid HTML tag name to use in the template}
 
 \item{innerHTML}{A valid HTML fragment to use as the component shadow DOM}
 

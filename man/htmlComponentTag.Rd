@@ -4,10 +4,10 @@
 \alias{htmlComponentTag}
 \title{Generate a custom HTML tag.}
 \usage{
-htmlComponentTag(htmlTagName, inputId, ...)
+htmlComponentTag(htmlWCTagName, inputId, ...)
 }
 \arguments{
-\item{htmlTagName}{A valid HTML tag name to use in the template}
+\item{htmlWCTagName}{A valid HTML tag name to use in the template}
 
 \item{inputId}{The tag ID attribute}
 

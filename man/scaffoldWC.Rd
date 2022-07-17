@@ -4,7 +4,7 @@
 \alias{scaffoldWC}
 \title{Generate a shiny bound component.}
 \usage{
-scaffoldWC(inputId, innerHTML, htmlClassName, htmlTagName, initialState, ...)
+scaffoldWC(inputId, innerHTML, htmlClassName, htmlWCTagName, initialState, ...)
 }
 \arguments{
 \item{inputId}{Component Id}
@@ -13,7 +13,7 @@ scaffoldWC(inputId, innerHTML, htmlClassName, htmlTagName, initialState, ...)
 
 \item{htmlClassName}{A valid web class name to use in the template}
 
-\item{htmlTagName}{A valid HTML tag name to use in the template}
+\item{htmlWCTagName}{A valid HTML tag name to use in the template}
 
 \item{initialState}{Initial state of the component binds}
 
