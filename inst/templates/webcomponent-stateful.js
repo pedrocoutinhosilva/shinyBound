@@ -31,6 +31,7 @@ class {{className}} extends HTMLElement {
   // only passed to the shiny input variable if requested in the bindings
   eventCounters = {};
 
+  // Used to skip the first update trigger, to avoid init triggers on the shiny side
   loadComplete = false;
 
   constructor() {
@@ -273,13 +274,14 @@ class {{className}} extends HTMLElement {
                   : node.style[bindProp] = bindValue.toString();
               break;
             case "class":
-              let removals = !dataProp.includes(':') ? [bindValue] :
-                (bindProp.localeCompare(`{${prop}}`) === 0
+              let removals = !singleProp.includes(':')
+                ? [bindValue]
+                : (bindProp.localeCompare(`{${prop}}`) === 0
                   ? [bindValue]
                   : Object.values(node.classList).filter(single => single.match(RegExp(bindProp.replace(`{${prop}}`, "\\w+"), 'i'))))
-              node.classList.remove(...removals)
 
-              node.classList.add((dataProp.includes(':') ? bindProp : `{${prop}}`).replace(`{${prop}}`, bindValue))
+              node.classList.remove(...removals);
+              node.classList.add((singleProp.includes(':') ? bindProp : `{${prop}}`).replace(`{${prop}}`, bindValue));
               break;
           }
         }

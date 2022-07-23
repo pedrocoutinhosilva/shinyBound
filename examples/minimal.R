@@ -20,7 +20,7 @@ registerComponent("fancyButton",
     <button
       fsProperty="innerHTML:content"
       tsProperty="innerHTML:content"
-      fsClass="type"
+      fsClass="is-{type}:type"
       tsEvent="click:clicks"
       type="button" class="nes-btn is-primary">Primary</button>
   ')
@@ -30,7 +30,7 @@ registerComponent("fancyButton",
 ui <- fixedPage(
   actionButton("shinyButton1", "Chance style"),
   useComponent("boundButton1", "fancyButton"),
-  useComponent("boundButton2", "fancyButton", list(type = "is-error", content = "Error")),
+  useComponent("boundButton2", "fancyButton", list(type = "error", content = "Error")),
   actionButton("shinyButton2", "Action Button"),
   actionButton("shinyButton3", "Action Button"),
   actionButton("shinyButton4", "Action Button"),
@@ -45,7 +45,7 @@ server <- function(input, output, session) {
     print(input$boundButton2)
   })
   observeEvent(input$shinyButton1, {
-    updateComponent(session, "boundButton1", type = "is-success", content = "Success")
+    updateComponent(session, "boundButton1", type = "success", content = "Success")
   })
 }
 
