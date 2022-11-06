@@ -37,10 +37,26 @@ class {{className}} extends HTMLElement {
   constructor() {
     super();
 
+    this.dataset.numberDependencies = {{numberDependencies}};
+    this.dataset.loadedDependencies = 0;
+
+    this.isFinishedLoading = function() {
+
+      let rootElement = this.shadowRoot.querySelector(".shinywc-root");
+
+      if (parseInt(this.dataset.numberDependencies) == parseInt(this.dataset.loadedDependencies)) {
+        this.classList.remove("shinywc-shine");
+        rootElement.style.opacity = 1;
+      } else {
+        this.classList.add("shinywc-shine");
+        rootElement.style.opacity = 0;
+      }
+    }
+
     // HTML content for the web component. Runs in open JS mode to allow
     // external javascript code (including shiny code) to access the shadow DOM
     const shadowRoot = this.attachShadow({mode: 'open'});
-    shadowRoot.innerHTML = `<div>{{innerHTML}}</div>`;
+    shadowRoot.innerHTML = `<div class = "shinywc-root">{{innerHTML}}</div>`;
 
     // Automatically slots ui outputs from shiny
     this.autoSlots.map((selector) => [ ...this.selectAll(selector)])
@@ -90,7 +106,13 @@ class {{className}} extends HTMLElement {
   // Triggered when the element is added to the page
   connectedCallback() {
     console.log('Custom element added to page.');
-    this.style.opacity = 1;
+
+    let rootElement = this.shadowRoot.querySelector(".shinywc-root");
+
+    if (this.dataset.numberDependencies != 0) {
+      this.classList.add("shinywc-shine");
+      rootElement.style.opacity = 0;
+    }
   }
 
   // Triggered when the element is removed to the page

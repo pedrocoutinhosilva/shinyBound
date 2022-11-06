@@ -13,9 +13,9 @@
 createDependency <- function(content, scope = "local", type = "script") {
   wrappedContent <- switch(
     type,
-    "script" = tags$script(content),
-    "module" = tags$script(type = "module", content),
-    "style" = tags$style(content)
+    "script" = tags$script(content, onload = "console.log('done')"),
+    "module" = tags$script(type = "module", content, onload = "console.log('done')"),
+    "style" = tags$style(content, onload = "console.log('done')")
   )
 
   return(switch(
@@ -77,7 +77,8 @@ webComponentBindings <- function(template,
                                  htmlClassName,
                                  htmlWCTagName,
                                  innerHTML,
-                                 initialState) {
+                                 initialState,
+                                 numberDependencies = 0) {
   initialState %<>%
     dropNulls() %>%
     toJSON(auto_unbox = TRUE)
@@ -86,7 +87,8 @@ webComponentBindings <- function(template,
     className = htmlClassName,
     tagName = htmlWCTagName,
     innerHTML = innerHTML,
-    initialState = initialState
+    initialState = initialState,
+    numberDependencies = numberDependencies
   )
 
   htmlTemplate %>%
@@ -168,6 +170,15 @@ scaffoldWC <- function(inputId,
     str_replace_all("<script((.|\\s)*?)\\/script>", "") %>%
     str_replace_all("<head((.|\\s)*?)\\/head>", "")
 
+  # track when external dependencies finish loading
+  innerHTML %<>%
+    toString() %>%
+    str_replace_all("<style", "<style onload='trackDependency(this)'") %>%
+    str_replace_all("<link", "<link onload='trackDependency(this)'")
+
+  numberDependencies <- (innerHTML %>% stringr::str_count("<link")) +
+    (innerHTML %>% stringr::str_count("<style"))
+
   # scripts folder
   # TODO switch to html dep
   dep_dir <- file.path(tempdir(), "www", "shinyBound", "wc", inputId)
@@ -229,7 +240,8 @@ scaffoldWC <- function(inputId,
       htmlClassName,
       htmlWCTagName,
       innerHTML %>% replacePlaceholders(inputId),
-      initialState
+      initialState,
+      numberDependencies
     ),
     shinyBindings(
       system.file("templates/shiny-bindings.js", package = "shinyBound"),

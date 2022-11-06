@@ -10,6 +10,7 @@ registerComponent("fancyButton",
       <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     </head>
     <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
+    <script> console.log("tag") </script>
 
     <style>
       html, body, pre, code, kbd, samp, div {

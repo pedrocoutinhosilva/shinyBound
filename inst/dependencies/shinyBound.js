@@ -24,3 +24,8 @@ if (typeof shinyBoundScopedScript != 'function') {
 var ShinyBound = {
   version: null
 }
+
+let trackDependency = function(object) {
+  object.getRootNode().host.dataset.loadedDependencies = parseInt(object.getRootNode().host.dataset.loadedDependencies) + 1
+  object.getRootNode().host.isFinishedLoading();
+}
