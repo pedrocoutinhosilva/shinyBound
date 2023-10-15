@@ -19,7 +19,12 @@
   -webkit-animation-iteration-count: infinite;
   -webkit-animation-name: placeholderShimmer;
   -webkit-animation-timing-function: linear;
-  }
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeholderShimmer;
+  animation-timing-function: linear;
+}
 
 box {
   height: 104px;
@@ -39,6 +44,15 @@ photo {
   margin-top: 15px;
 }
 
+@keyframes placeholderShimmer {
+  0% {
+    background-position: -468px 0;
+  }
+
+  100% {
+    background-position: 468px 0;
+  }
+}
 @-webkit-keyframes placeholderShimmer {
   0% {
     background-position: -468px 0;

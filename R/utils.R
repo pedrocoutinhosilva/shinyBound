@@ -20,7 +20,7 @@ dropNulls <- function(x) {
 #'
 #' @return TRUE or FALSE depending if the object is a valid ShinySession.
 #' @keywords utils internal
-is.ShinySession <- function(object) {
+is.ShinySession <- function(object) { #nolint
   inherits(object, c("ShinySession", "MockShinySession", "session_proxy"))
 }
 
@@ -35,7 +35,7 @@ is.ShinySession <- function(object) {
 #'
 #' @return No return value, called for side effects.
 #' @keywords utils internal
-validateSessionObject <- function (session,
+validateSessionObject <- function(session,
                                    label = as.character(
                                      sys.call(sys.parent())[[1]])
                                    ) {

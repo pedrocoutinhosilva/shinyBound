@@ -105,7 +105,7 @@ class {{className}} extends HTMLElement {
 
   // Triggered when the element is added to the page
   connectedCallback() {
-    console.log('Custom element added to page.');
+    //console.log('Custom element added to page.');
 
     let rootElement = this.shadowRoot.querySelector(".shinywc-root");
 
@@ -117,11 +117,16 @@ class {{className}} extends HTMLElement {
 
   // Triggered when the element is removed to the page
   disconnectedCallback() {
-    console.log('Custom element removed from page.');
+    //console.log('Custom element removed from page.');
   }
 
   // Update all component values based on a given object
   setState(newState) {
+    this.newState = {
+      state: newState,
+      timestamp: Date.now()
+    };
+
     Object.entries(newState)
       .forEach(([key, value]) => {
         this.state[key] = this.isObject(this.state[key]) && this.isObject(value)
@@ -274,7 +279,16 @@ class {{className}} extends HTMLElement {
 
           const isStateUpdate = singleProp.includes(':') && this.isCustomElement(target);
 
-          console.log([bindProp, bindValue, target])
+          //console.log([bindProp, bindValue, target])
+          //console.log([type == "attribute", bindProp == "disabled", !bindValue])
+
+          if (type == "attribute" && bindProp == "disabled" && !bindValue) {
+            bindValue == "";
+
+            node.removeAttribute(bindProp);
+
+            break;
+          }
 
           switch(type) {
             case "property":
@@ -296,14 +310,21 @@ class {{className}} extends HTMLElement {
                   : node.style[bindProp] = bindValue.toString();
               break;
             case "class":
-              let removals = !singleProp.includes(':')
-                ? [bindValue]
-                : (bindProp.localeCompare(`{${prop}}`) === 0
-                  ? [bindValue]
-                  : Object.values(node.classList).filter(single => single.match(RegExp(bindProp.replace(`{${prop}}`, "\\w+"), 'i'))))
+              console.log(node.currentTimestap)
 
-              node.classList.remove(...removals);
-              node.classList.add((singleProp.includes(':') ? bindProp : `{${prop}}`).replace(`{${prop}}`, bindValue));
+              if (typeof node.defaultClasses == "undefined") {
+                node.defaultClasses = node.classList
+              }
+
+              if (node.currentTimestap != this.newState.timestamp) {
+                node.currentTimestap = this.newState.timestamp
+
+                node.stepClassList = node.defaultClasses;
+              }
+
+              node.stepClassList.add((singleProp.includes(':') ? bindProp : `{${prop}}`).replace(`{${prop}}`, bindValue));
+
+              node.classList = node.stepClassList;
               break;
           }
         }

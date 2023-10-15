@@ -121,6 +121,7 @@ webComponentBindings <- function(template,
 #' @importFrom stringr str_extract_all
 #' @importFrom stringr str_replace_all
 #' @importFrom shiny addResourcePath
+#' @importFrom shiny resourcePaths
 #' @importFrom stringi stri_rand_strings
 #'
 #' @return A HTML tagList.
@@ -138,12 +139,13 @@ scaffoldWC <- function(inputId,
     read_html() %>%
     html_nodes("script")
 
-  # Extract script tags to be parsed differently
-  head_nodes <- innerHTML %>%
-    toString() %>%
-    HTML() %>%
-    read_html() %>%
-    html_nodes("head")
+  # Extract head tags to be parsed differently
+  head_nodes <- stringr::str_extract_all(innerHTML, "<head((.|\\s)*?)\\/head>")[[1]] %>%
+    paste(collapse = "")
+
+  if (paste(head_nodes) == "character(0)") {
+    head_nodes <- NULL
+  }
 
   # Extract script tags to be parsed differently
   slot_names <- innerHTML %>%
@@ -152,7 +154,9 @@ scaffoldWC <- function(inputId,
     read_html() %>%
     html_nodes("slot") %>%
     html_attrs() %>%
-    lapply(\(node) { node[["name"]] }) %>%
+    lapply(function(node) {
+      node[["name"]]
+    }) %>%
     unlist(use.names = FALSE)
 
   wc_tag_arguments <- list(...)
@@ -197,9 +201,19 @@ scaffoldWC <- function(inputId,
         return(as.character(script))
       }
 
-      # If the src is relative, load the file from the base shiny www
-      if (file.exists(file.path("www", attributes$src))) {
-          parsed_content <- file.path("www", attributes$src) %>%
+      # If the src is relative, check in dependencies
+      file_path <- file.path("www", attributes$src)
+      resource_paths <- stringr::str_split(attributes$src, "/")[[1]][1]
+
+      if (resource_paths %in% names(shiny::resourcePaths())) {
+        file_path <- file.path(
+          shiny::resourcePaths()[[resource_paths]],
+          do.call(file.path, as.list(tail(stringr::str_split(attributes$src, "/")[[1]], -1)))
+        )
+      }
+
+      if (file.exists(file_path)) {
+          file_path %>%
             readr::read_file() %>%
             writeLines(file.path(dep_dir, basename(attributes$src)))
       } else {
@@ -210,7 +224,7 @@ scaffoldWC <- function(inputId,
           return(as.character(script))
         }
 
-        parsed_content <- request %>%
+        request %>%
           httr::content(as = "text") %>%
           writeLines(file.path(dep_dir, basename(attributes$src)))
       }
@@ -220,7 +234,8 @@ scaffoldWC <- function(inputId,
 
       do.call(tags$script, attributes) %>%
         as.character()
-  }) %>% unlist()
+  }) %>%
+  unlist()
 
   tagList(
     htmltools::htmlDependency(

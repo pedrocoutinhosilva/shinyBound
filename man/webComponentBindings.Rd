@@ -9,7 +9,8 @@ webComponentBindings(
   htmlClassName,
   htmlWCTagName,
   innerHTML,
-  initialState
+  initialState,
+  numberDependencies = 0
 )
 }
 \arguments{

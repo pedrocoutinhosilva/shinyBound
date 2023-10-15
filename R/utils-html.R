@@ -221,7 +221,7 @@ tagAppendBinds <- function(tag,
     dropNulls()
 
   attributes <- list()
-  for(name in names(arguments)) {
+  for (name in names(arguments)) {
     parsed_name <- name %>%
       gsub("([[:upper:]])", "-\\1", .) %>%
       tolower() %>%
