@@ -34,6 +34,9 @@ class {{className}} extends HTMLElement {
   // Used to skip the first update trigger, to avoid init triggers on the shiny side
   loadComplete = false;
 
+  // repeater node templates
+  repeaterTemplates = {};
+
   constructor() {
     super();
 
@@ -72,6 +75,19 @@ class {{className}} extends HTMLElement {
         this.append(node)
       })
 
+    this.repeaterTemplates = [...this.selectAll("[data-from-shiny-repeater]")].map(node => {
+      node.setAttribute("templateId", Date.now())
+
+      let template = {
+        parent: node.parentElement,
+        node: node
+      }
+
+      node.remove()
+
+      return(template)
+    })
+
     // Custom event that signals a update of the component state. Used by
     // shiny to know when the component related inputs need updating.
     // see getState() and inst/shiny.bindings.js for more info.
@@ -88,14 +104,15 @@ class {{className}} extends HTMLElement {
       element.dataset.toShinyEvent
         .split("|")
         .forEach(event => {
-          element[`on${event.includes(':') ? event.split(':').shift() : event}`] = event => {
+
+          element.addEventListener(`${event.includes(':') ? event.split(':').shift() : event}`, function (event) {
             this.eventCounters[event.type] = this.eventCounters.hasOwnProperty(event.type)
               ? this.eventCounters[event.type] + 1
               : 1
             if (this.loadComplete) {
               this.dispatchEvent(this.updatedEvent);
             }
-          };
+          }.bind(this), false);
         })
     })
 
@@ -258,11 +275,107 @@ class {{className}} extends HTMLElement {
 
   // Updates all HTML elements that read information for a specific state prop
   updateBindings(prop, value = '') {
+    let repeaters = this.repeaterTemplates.filter((single) => {
+      return(single.node.getAttribute("data-from-shiny-repeater") == prop)
+    })
+    
+    let newState = this.newState
+
+    repeaters.forEach(function(single) {
+      let id = single.node.getAttribute("templateId")
+
+      single.parent.querySelectorAll(`[templateId='${id}']`).forEach(node => {node.remove()})
+
+      value.forEach(function(val, index) {
+        let tempnode = single.node
+
+        let repeaterNodes = ["property", "attribute", "style", "class"]
+          .reduce((elementList, attribute) => {
+            let queryWrapper = document.createElement("div");
+            queryWrapper.appendChild(tempnode)
+
+            elementList[attribute] = queryWrapper.querySelectorAll(`[data-from-shiny-${attribute}*="repeater"]`);
+
+            [...elementList[attribute]].map(node => {
+              [...node.getAttribute(`data-from-shiny-${attribute}`).split("|").flat()]
+                  .filter(binding => {
+                      return binding.includes("repeater")
+                  }, this)
+                  .forEach(binding => {
+                      let singlePropKey = binding.includes(':') ? binding.split(':').shift() : binding;
+          
+                      switch(attribute) {
+                        case "property":
+                          node[singlePropKey] = val;
+                          break;
+                        case "attribute":
+                          node.setAttribute(singlePropKey, val.toString());
+                          break;
+                      }
+                  }, this) 
+              return node 
+          }, this)
+
+          return elementList;
+        }, {})
+
+        
+
+      
+        // let keyAttribute = ["property", "attribute", "style", "class"].filter(attribute => {
+        //   return tempnode.getAttribute(`data-from-shiny-${attribute}`)?.split(":").includes("key")
+        // })
+
+        // let noKey = false
+        // if (keyAttribute.length < 1) {
+        //   noKey = true
+        //   keyAttribute = ["property", "attribute", "style", "class"].filter(attribute => {
+        //     return tempnode.getAttribute(`data-from-shiny-${attribute}`)?.replace("key", "value").split(":").includes("value")
+        //   })
+        // }
+
+        // let valueAttribute = ["property", "attribute", "style", "class"].filter(attribute => {
+        //   return tempnode.getAttribute(`data-from-shiny-${attribute}`)?.split(":").includes("value")
+        // })
+
+        // let singlePropKey = tempnode.getAttribute(`data-from-shiny-${keyAttribute}`)
+        // let singlePropValue = tempnode.getAttribute(`data-from-shiny-${valueAttribute}`)
+
+        // const bindPropKey = singlePropKey.includes(':') ? singlePropKey.split(':').shift() : singlePropKey;
+        // const bindPropValue = singlePropValue.includes(':') ? singlePropValue.split(':').shift() : singlePropValue;
+
+        // switch(valueAttribute[0]) {
+        //   case "property":
+        //     tempnode[bindPropValue] = val;
+        //     break;
+        //   case "attribute":
+        //     tempnode.setAttribute(bindPropValue, val.toString());
+        //     break;
+        // }
+
+        // let secondaryValue = keyAttribute
+        // if (noKey) {
+        //   secondaryValue = valueAttribute
+        // }
+
+        // switch(keyAttribute[0]) {
+        //   case "property":
+        //     tempnode[bindPropKey] = val;
+        //     break;
+        //   case "attribute":
+        //     tempnode.setAttribute(bindPropKey, val.toString());
+        //     break;
+        // }        
+
+        single.parent.appendChild(tempnode.cloneNode(true))
+      }, this)
+    }, this)
+
     const bindings = ["property", "attribute", "style", "class"]
       .reduce((elementList, attribute) => {
         elementList[attribute] = this.getBoundElements(attribute, prop);
         return elementList;
-      }, {});
+      }, {})
 
     Object.entries(bindings).map(([type, elements]) => {
       elements.map(node => {
@@ -274,7 +387,7 @@ class {{className}} extends HTMLElement {
           let singleProp = dataProp[index];
 
           const bindProp = singleProp.includes(':') ? singleProp.split(':').shift() : singleProp;
-          const bindValue = singleProp.includes('.') ? singleProp.split('.').slice(1).reduce((obj, p) => obj[p], value) : value;
+          let bindValue = singleProp.includes(':') ? singleProp.split('.').slice(1).reduce((obj, p) => obj[p], value) : value;
           const target = [...this.selectAll(node.tagName)].find(el => el === node);
 
           const isStateUpdate = singleProp.includes(':') && this.isCustomElement(target);
@@ -289,9 +402,33 @@ class {{className}} extends HTMLElement {
 
             break;
           }
+          
+          // let dom = document.createElement('div')          
 
           switch(type) {
             case "property":
+              if (bindProp == "innerHTML") {
+                bindValue = bindValue.replace(/&lt;/g , "<")
+                  .replace(/&gt;/g , ">")
+                  .replace(/&quot;/g , "\"")
+                  .replace(/&#39;/g , "\'")
+                  .replace(/&amp;/g , "&")
+
+                // dom.innerHTML = bindValue
+
+                // dom.querySelectorAll(".shinywc-component").forEach((node) => {
+                //   document.body.appendChild(node.cloneNode(true))
+                //   node.remove()
+                // })
+
+                // dom.querySelectorAll("script").forEach((node) => {
+                //   document.head.appendChild(node.cloneNode(true))
+                //   node.remove()
+                // })
+
+                // bindValue = dom.innerHTML
+              }
+
               isStateUpdate ? target.setState({[`${bindProp}`]: bindValue}) :
                 this.isArray(bindValue)
                   ? target[bindProp] = bindValue
@@ -310,8 +447,6 @@ class {{className}} extends HTMLElement {
                   : node.style[bindProp] = bindValue.toString();
               break;
             case "class":
-              console.log(node.currentTimestap)
-
               if (typeof node.defaultClasses == "undefined") {
                 node.defaultClasses = node.classList
               }

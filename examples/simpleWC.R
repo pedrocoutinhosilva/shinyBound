@@ -28,11 +28,8 @@ server <- function(input, output, session) {
           display: flex; justify-content: center; align-items: center;
           text-align: center;
         "
-      ),
-      list(label = "Button to update"),
-      HTML("
-        console.log('shiny');
-      ")
+      ) |> toString(),
+      list(label = "Button to update")
     )
   })
 

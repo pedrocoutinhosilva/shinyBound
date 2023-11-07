@@ -269,7 +269,8 @@ replacePlaceholders <- function(html, id) {
       tsStyle = "data-to-shiny-style",
       tsAttribute = "data-to-shiny-attribute",
       tsClass = "data-to-shiny-class",
-      tsEvent = "data-to-shiny-event"
+      tsEvent = "data-to-shiny-event",
+      fsRepeater = "data-from-shiny-repeater"
     )) %>% HTML()
   })
 }
