@@ -26,6 +26,27 @@ var ShinyBound = {
 }
 
 let trackDependency = function(object) {
-  object.getRootNode().host.dataset.loadedDependencies = parseInt(object.getRootNode().host.dataset.loadedDependencies) + 1
-  object.getRootNode().host.isFinishedLoading();
+  // object.getRootNode().host.dataset.loadedDependencies = parseInt(object.getRootNode().host.dataset.loadedDependencies) + 1
+  // object.getRootNode().host.isFinishedLoading();
+}
+
+if (typeof registerCustomComponent != 'function') {
+  let registerCustomComponent = function(message) {
+    let classtag = document.createElement('script')
+
+    Object.entries(message.class.attribs).forEach(([key, value]) => {
+      classtag[[key]] = value
+    })
+
+    let bindingtag = document.createElement('script')
+
+    Object.entries(message.binding.attribs).forEach(([key, value]) => {
+      bindingtag[[key]] = value
+    })
+
+    document.head.appendChild(classtag)
+    document.head.appendChild(bindingtag)
+  }
+
+  Shiny.addCustomMessageHandler('registerCustomComponent', registerCustomComponent)
 }

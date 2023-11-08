@@ -9,13 +9,45 @@
 #' @param type The type of content. Can be either a JS script, a JS module or
 #'   simply valid CSS.
 #'
+#' @importFrom rlang hash
+#' @importFrom shiny resourcePaths
+#' @importFrom fs path
+#' @importFrom readr write_file
+#'
 #' @return A HTML tagList.
 createDependency <- function(content, scope = "local", type = "script") {
+
+  if ("boundDeps" %in% names(resourcePaths())) {
+    dependency_dir <- resourcePaths()[["boundDeps"]]
+  } else {
+    dependency_dir <- path(tempdir(), "boundDeps")
+
+    if (!dir.exists(dependency_dir)) {
+        dir.create(dependency_dir, recursive = TRUE)
+    }
+
+    addResourcePath("boundDeps", dependency_dir)
+  }
+
+  content_hash <- content |> hash()
+
+  if (type %in% c("script", "module")) {
+    if (!file.exists(path(dependency_dir, paste0(content_hash, ".js")))) {
+      write_file(content |> as.character(), path(dependency_dir, paste0(content_hash, ".js")))
+    }
+  }
+
+  if (type %in% c("style")) {
+    if (!file.exists(path(dependency_dir, paste0(content_hash, ".css")))) {
+      write_file(content |> as.character(), path(dependency_dir, paste0(content_hash, ".css")))
+    }
+  }
+
   wrappedContent <- switch(
     type,
-    "script" = tags$script(content, onload = "console.log('done')"),
-    "module" = tags$script(type = "module", content, onload = "console.log('done')"),
-    "style" = tags$style(content, onload = "console.log('done')")
+    "script" = tags$script(src = path("boundDeps", paste0(content_hash, ".js"))),
+    "module" = tags$script(type = "module", src = path("boundDeps", paste0(content_hash, ".js"))),
+    "style" = tags$link(rel = "stylesheet", href = path("boundDeps", paste0(content_hash, ".css")))
   )
 
   return(switch(
@@ -49,7 +81,7 @@ shinyBindings <- function(template, htmlClassName, htmlWCTagName) {
 
   htmlTemplate %>%
     do.call(modifyList(list(template), options)) %>%
-    createDependency(scope = "global") %>%
+    createDependency(scope = "local") %>%
     singleton()
 }
 
@@ -93,7 +125,7 @@ webComponentBindings <- function(template,
 
   htmlTemplate %>%
     do.call(modifyList(list(template), options)) %>%
-    createDependency(type = "module", scope = "global") %>%
+    createDependency(type = "module", scope = "local") %>%
     singleton()
 }
 
@@ -113,6 +145,7 @@ webComponentBindings <- function(template,
 #' @importFrom magrittr "%>%"
 #' @importFrom magrittr "%<>%"
 #' @importFrom htmltools tagList
+#' @importFrom htmltools doRenderTags
 #' @importFrom rvest html_attrs
 #' @importFrom rvest html_node
 #' @importFrom rvest html_nodes
@@ -131,7 +164,6 @@ scaffoldWC <- function(inputId,
                        htmlWCTagName,
                        initialState,
                        ...) {
-
   # Extract script tags to be parsed differently
   script_nodes <- innerHTML %>%
     toString() %>%
@@ -147,7 +179,7 @@ scaffoldWC <- function(inputId,
     head_nodes <- NULL
   }
 
-  # Extract script tags to be parsed differently
+  # Extract slot tags to be parsed differently
   slot_names <- innerHTML %>%
     toString() %>%
     HTML() %>%
@@ -192,79 +224,102 @@ scaffoldWC <- function(inputId,
   addResourcePath(web_dir, dep_dir)
 
   autoSlotScripts <- lapply(script_nodes, function(script) {
-      attributes <- script %>%
-        html_attrs() %>%
-        as.list()
+    attributes <- script %>%
+      html_attrs() %>%
+      as.list()
 
-      # Inline scripts require no additional parsing
-      if (is.null(attributes$src)) {
+    # Inline scripts require no additional parsing
+    if (is.null(attributes$src)) {
+      return(as.character(script))
+    }
+
+    # If the src is relative, check in dependencies
+    file_path <- file.path("www", attributes$src)
+    resource_paths <- stringr::str_split(attributes$src, "/")[[1]][1]
+
+    if (resource_paths %in% names(shiny::resourcePaths())) {
+      file_path <- file.path(
+        shiny::resourcePaths()[[resource_paths]],
+        do.call(file.path, as.list(tail(stringr::str_split(attributes$src, "/")[[1]], -1)))
+      )
+    }
+
+    if (file.exists(file_path)) {
+      file_path %>%
+        readr::read_file() %>%
+        writeLines(file.path(dep_dir, basename(attributes$src)))
+    } else {
+      request <- httr::GET(attributes$src)
+
+      # If the src is not relative, check for a valid http request
+      if (httr::http_error(request)) {
         return(as.character(script))
       }
 
-      # If the src is relative, check in dependencies
-      file_path <- file.path("www", attributes$src)
-      resource_paths <- stringr::str_split(attributes$src, "/")[[1]][1]
+      request %>%
+        httr::content(as = "text") %>%
+        writeLines(file.path(dep_dir, basename(attributes$src)))
+    }
 
-      if (resource_paths %in% names(shiny::resourcePaths())) {
-        file_path <- file.path(
-          shiny::resourcePaths()[[resource_paths]],
-          do.call(file.path, as.list(tail(stringr::str_split(attributes$src, "/")[[1]], -1)))
-        )
-      }
+    attributes$src <- web_dir %>%
+      file.path(basename(attributes$src))
 
-      if (file.exists(file_path)) {
-          file_path %>%
-            readr::read_file() %>%
-            writeLines(file.path(dep_dir, basename(attributes$src)))
-      } else {
-        request <- httr::GET(attributes$src)
-
-        # If the src is not relative, check for a valid http request
-        if (httr::http_error(request)) {
-          return(as.character(script))
-        }
-
-        request %>%
-          httr::content(as = "text") %>%
-          writeLines(file.path(dep_dir, basename(attributes$src)))
-      }
-
-      attributes$src <- web_dir %>%
-        file.path(basename(attributes$src))
-
-      do.call(tags$script, attributes) %>%
-        as.character()
+    do.call(tags$script, attributes) %>%
+      as.character()
   }) %>%
-  unlist()
+    unlist()
 
-  tagList(
-    htmltools::htmlDependency(
-      name = "shinyBound",
-      version = "0.1.0",
-      src = list(file = "dependencies"),
-      package = "shinyBound",
-      script = c(
-        "shinyBound.js"
-      ),
-      stylesheet = c(
-        "shinyBound.css"
-      )
-    ),
-    webComponentBindings(
-      system.file("templates/webcomponent-stateful.js", package = "shinyBound"),
-      htmlClassName,
-      htmlWCTagName,
-      innerHTML %>% replacePlaceholders(inputId),
-      initialState,
-      numberDependencies
-    ),
-    shinyBindings(
-      system.file("templates/shiny-bindings.js", package = "shinyBound"),
-      htmlClassName,
-      htmlWCTagName
-    ),
+  componentClass <- webComponentBindings(
+    system.file("templates/webcomponent-stateful.js", package = "shinyBound"),
+    htmlClassName,
+    htmlWCTagName,
+    innerHTML %>% replacePlaceholders(inputId),
+    initialState,
+    numberDependencies
+  )
+
+  componentBinding <- shinyBindings(
+    system.file("templates/shiny-bindings.js", package = "shinyBound"),
+    htmlClassName,
+    htmlWCTagName
+  )
+
+  fragment <- tagList(
     htmlComponentTag(htmlWCTagName, inputId, wc_tag_arguments),
     tags$head(HTML(paste0(autoSlotScripts, collapse = " "))),
-    tags$head(HTML(paste0(head_nodes, collapse = " ")))
+    tags$head(HTML(paste0(head_nodes, collapse = " "))),
+  )
+
+  # session <- shiny::getDefaultReactiveDomain()
+  # session$sendCustomMessage("registerCustomComponent", list(
+  #   class = componentClass,
+  #   binding = componentBinding
+  # ))
+
+  tagList(
+    useShinyBound(),
+    fragment,
+    tag("template", list(
+      id = htmlClassName,
+      HTML(innerHTML %>% replacePlaceholders(inputId))
+    )),
+    tags$head(componentClass),
+    tags$head(componentBinding)
+  )
+}
+
+#' @export
+useShinyBound <- function() {
+  htmltools::htmlDependency(
+    name = "shinyBound",
+    version = "0.1.0",
+    src = list(file = "dependencies"),
+    package = "shinyBound",
+    script = c(
+      "shinyBound.js"
+    ),
+    stylesheet = c(
+      "shinyBound.css"
+    )
   )
 }

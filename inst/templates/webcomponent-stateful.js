@@ -13,7 +13,8 @@ class {{className}} extends HTMLElement {
   autoSlots = [
     ".shiny-html-output",
     ".shiny-input-container",
-    ".html-widget-output"
+    ".html-widget-output",
+    ".shinywc-component"
   ]
 
   // Default state for the element defined when defining the component
@@ -59,7 +60,19 @@ class {{className}} extends HTMLElement {
     // HTML content for the web component. Runs in open JS mode to allow
     // external javascript code (including shiny code) to access the shadow DOM
     const shadowRoot = this.attachShadow({mode: 'open'});
-    shadowRoot.innerHTML = `<div class = "shinywc-root">{{innerHTML}}</div>`;
+    shadowRoot.innerHTML = `<div class = "shinywc-root"></div>`;
+  }
+
+  // Triggered when the element is added to the page
+  connectedCallback() {
+    //console.log('Custom element added to page.');
+
+    let rootElement = this.shadowRoot.querySelector(".shinywc-root");
+
+    document.body.append(this.parentNode.querySelector(`#{{className}}`).cloneNode(true))
+    this.parentNode.querySelector(`#{{className}}`).remove()
+
+    this.shadowRoot.querySelector(".shinywc-root").appendChild(document.querySelector(`#{{className}}`).content.cloneNode(true))
 
     // Automatically slots ui outputs from shiny
     this.autoSlots.map((selector) => [ ...this.selectAll(selector)])
@@ -118,18 +131,13 @@ class {{className}} extends HTMLElement {
 
     // Sets the inital state of the component based on the given initialState
     this.setState(this.initialState);
-  }
 
-  // Triggered when the element is added to the page
-  connectedCallback() {
-    //console.log('Custom element added to page.');
 
-    let rootElement = this.shadowRoot.querySelector(".shinywc-root");
 
-    if (this.dataset.numberDependencies != 0) {
-      this.classList.add("shinywc-shine");
-      rootElement.style.opacity = 0;
-    }
+    // if (this.dataset.numberDependencies != 0) {
+    //   this.classList.add("shinywc-shine");
+    //   rootElement.style.opacity = 0;
+    // }
   }
 
   // Triggered when the element is removed to the page
@@ -139,6 +147,8 @@ class {{className}} extends HTMLElement {
 
   // Update all component values based on a given object
   setState(newState) {
+
+    debugger
     this.newState = {
       state: newState,
       timestamp: Date.now()
@@ -168,6 +178,8 @@ class {{className}} extends HTMLElement {
   // secondary shiny input is also updated and can be observed in shiny as a
   // reactive value under input${inputId}_{key}
   getState() {
+
+    debugger
     let returnState = {}
 
     // Find all elements in the web component that have binding attributes for
@@ -275,6 +287,9 @@ class {{className}} extends HTMLElement {
 
   // Updates all HTML elements that read information for a specific state prop
   updateBindings(prop, value = '') {
+
+    debugger
+
     let repeaters = this.repeaterTemplates.filter((single) => {
       return(single.node.getAttribute("data-from-shiny-repeater") == prop)
     })
@@ -402,29 +417,59 @@ class {{className}} extends HTMLElement {
 
             break;
           }
-          
-          // let dom = document.createElement('div')          
+                
 
           switch(type) {
             case "property":
               if (bindProp == "innerHTML") {
-                bindValue = bindValue.replace(/&lt;/g , "<")
+                // let dom = document.createElement('div') 
+                // let temp = document.createElement('div') 
+
+                // console.log(bindValue)
+
+                bindValue = bindValue.toString().replace(/&lt;/g , "<")
                   .replace(/&gt;/g , ">")
                   .replace(/&quot;/g , "\"")
                   .replace(/&#39;/g , "\'")
                   .replace(/&amp;/g , "&")
 
                 // dom.innerHTML = bindValue
+                
 
-                // dom.querySelectorAll(".shinywc-component").forEach((node) => {
-                //   document.body.appendChild(node.cloneNode(true))
-                //   node.remove()
-                // })
+                // // Automatically slots ui outputs from shiny
+                // this.autoSlots.map((selector) => [ ...dom.querySelectorAll(selector)])
+                //   .flat()
+                //   .forEach(node => {
+                //     temp.appendChild(dom.cloneNode(true))
+                //     this.append(temp)
 
-                // dom.querySelectorAll("script").forEach((node) => {
-                //   document.head.appendChild(node.cloneNode(true))
-                //   node.remove()
-                // })
+                //     let slot = document.createElement('slot');
+                //     let randomName = `slot${Math.random().toString().substring(2)}${new Date().getTime()}`
+                //     slot.setAttribute('name', randomName)
+
+                //     temp.setAttribute('slot', randomName)
+
+                    
+                    
+
+                //     // $(node).replaceWith(slot)
+
+                //     dom.append(slot)
+                //   })
+
+                // // bindValue = dom.innerHTML  
+
+                // debugger
+
+                // // dom.querySelectorAll(".shinywc-component").forEach((node) => {
+                // //   document.body.appendChild(node.cloneNode(true))
+                // //   node.remove()
+                // // })
+
+                // // dom.querySelectorAll("script").forEach((node) => {
+                // //   document.head.appendChild(node.cloneNode(true))
+                // //   node.remove()
+                // // })
 
                 // bindValue = dom.innerHTML
               }

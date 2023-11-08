@@ -3,10 +3,11 @@ library(shinyBound)
 
 # Define UI for application
 ui <- fluidPage(
+  useShinyBound(),
+  actionButton("update", "Action button"),
   h4("Custom component"),
   uiOutput("out"),
   h4("Update attributes"),
-  actionButton("update", "Action button"),
   h4("Custom component Input values"),
   verbatimTextOutput("console_text")
 )
@@ -14,22 +15,23 @@ ui <- fluidPage(
 # Define server logic
 server <- function(input, output, session) {
   output$out <- renderUI({
-    component("testID",
-      tags$div(
-        fsProperty="innerHTML:label",
-        fsStyle="color:bling|font-size|border-color:bling",
+    tagList(
+      component("testID",
+        tags$div(
+          fsProperty="innerHTML:label",
+          fsStyle="color:bling|font-size|border-color:bling",
 
-        tsProperty = "innerHTML:content",
-        tsStyle="color:bling|font-size",
+          style = "
+            border: 1px solid;
+            width: 100px; height: 100px;
+            display: flex; justify-content: center; align-items: center;
+            text-align: center;
+          ",
 
-        style = "
-          border: 1px solid;
-          width: 100px; height: 100px;
-          display: flex; justify-content: center; align-items: center;
-          text-align: center;
-        "
-      ) |> toString(),
-      list(label = "Button to update")
+          tags$style("p {background: red;}")
+        ),
+        list(label = "test")
+      )
     )
   })
 
