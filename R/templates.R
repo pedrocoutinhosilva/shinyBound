@@ -15,7 +15,7 @@
 #' @importFrom readr write_file
 #'
 #' @return A HTML tagList.
-createDependency <- function(content, scope = "local", type = "script") {
+createDependency <- function(content, scope = "local", type = "script", path_only = FALSE) {
 
   if ("boundDeps" %in% names(resourcePaths())) {
     dependency_dir <- resourcePaths()[["boundDeps"]]
@@ -41,6 +41,10 @@ createDependency <- function(content, scope = "local", type = "script") {
     if (!file.exists(path(dependency_dir, paste0(content_hash, ".css")))) {
       write_file(content |> as.character(), path(dependency_dir, paste0(content_hash, ".css")))
     }
+  }
+
+  if (path_only) {
+    return(path("boundDeps", paste0(content_hash, ".js")))
   }
 
   wrappedContent <- switch(
@@ -110,9 +114,20 @@ webComponentBindings <- function(template,
                                  htmlWCTagName,
                                  innerHTML,
                                  initialState,
-                                 numberDependencies = 0) {
+                                 numberDependencies = 0,
+                                 onRenderCallbacks = c()) {
   initialState %<>%
     dropNulls() %>%
+    sapply(function(single) {
+      single |> as.character()
+    }, simplify = FALSE,USE.NAMES = TRUE) %>%
+    toJSON(auto_unbox = TRUE)
+
+  onRenderCallbacks %<>%
+    dropNulls() %>%
+    sapply(function(single) {
+      single |> as.character()
+    }, simplify = FALSE,USE.NAMES = TRUE) %>%
     toJSON(auto_unbox = TRUE)
 
   options <- list(
@@ -120,7 +135,8 @@ webComponentBindings <- function(template,
     tagName = htmlWCTagName,
     innerHTML = innerHTML,
     initialState = initialState,
-    numberDependencies = numberDependencies
+    numberDependencies = numberDependencies,
+    onRenderCallbacks = onRenderCallbacks
   )
 
   htmlTemplate %>%
@@ -230,8 +246,19 @@ scaffoldWC <- function(inputId,
 
     # Inline scripts require no additional parsing
     if (is.null(attributes$src)) {
-      return(as.character(script))
+      content <- script |> rvest::html_text()
+
+      # content <- paste("try { ", content, "} catch {}")
+
+      content %<>%
+        str_replace_all("document", paste0('document.querySelector("#', inputId, '").shadowRoot'))
+      #   str_replace_all("<script>", paste0('<script> if (typeof window.swCallback', hash(script), ' != "function") { window.swCallback', hash(script), ' = function() {')) %>%
+      #   str_replace_all("</script>", paste0('}.bind(window)} </script>'))
+      
+      return(createDependency(content, path_only = TRUE))
     }
+
+    return(attributes$src)
 
     # If the src is relative, check in dependencies
     file_path <- file.path("www", attributes$src)
@@ -264,10 +291,18 @@ scaffoldWC <- function(inputId,
     attributes$src <- web_dir %>%
       file.path(basename(attributes$src))
 
-    do.call(tags$script, attributes) %>%
-      as.character()
+    # do.call(tags$script, attributes) %>%
+    #   as.character()
+
+    attributes$src
   }) %>%
     unlist()
+
+  onRenderCallbacks <- list()
+  for(script in autoSlotScripts) {
+    onRenderCallbacks <- c(onRenderCallbacks, script)
+  }
+  # onRenderCallbacks <- unique(onRenderCallbacks)
 
   componentClass <- webComponentBindings(
     system.file("templates/webcomponent-stateful.js", package = "shinyBound"),
@@ -275,7 +310,8 @@ scaffoldWC <- function(inputId,
     htmlWCTagName,
     innerHTML %>% replacePlaceholders(inputId),
     initialState,
-    numberDependencies
+    numberDependencies,
+    onRenderCallbacks %>% dropNulls()
   )
 
   componentBinding <- shinyBindings(
@@ -286,7 +322,7 @@ scaffoldWC <- function(inputId,
 
   fragment <- tagList(
     htmlComponentTag(htmlWCTagName, inputId, wc_tag_arguments),
-    tags$head(HTML(paste0(autoSlotScripts, collapse = " "))),
+    # tags$head(HTML(paste0(autoSlotScripts, collapse = " "))),
     tags$head(HTML(paste0(head_nodes, collapse = " "))),
   )
 
@@ -303,8 +339,8 @@ scaffoldWC <- function(inputId,
       id = htmlClassName,
       HTML(innerHTML %>% replacePlaceholders(inputId))
     )),
-    tags$head(componentClass),
-    tags$head(componentBinding)
+    componentClass,
+    componentBinding
   )
 }
 

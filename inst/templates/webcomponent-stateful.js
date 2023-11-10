@@ -35,27 +35,13 @@ class {{className}} extends HTMLElement {
   // Used to skip the first update trigger, to avoid init triggers on the shiny side
   loadComplete = false;
 
-  // repeater node templates
+  // Templates that are repeated based on a state value
   repeaterTemplates = {};
+
+  onRenderCallbacks = {{onRenderCallbacks}};
 
   constructor() {
     super();
-
-    this.dataset.numberDependencies = {{numberDependencies}};
-    this.dataset.loadedDependencies = 0;
-
-    this.isFinishedLoading = function() {
-
-      let rootElement = this.shadowRoot.querySelector(".shinywc-root");
-
-      if (parseInt(this.dataset.numberDependencies) == parseInt(this.dataset.loadedDependencies)) {
-        this.classList.remove("shinywc-shine");
-        rootElement.style.opacity = 1;
-      } else {
-        this.classList.add("shinywc-shine");
-        rootElement.style.opacity = 0;
-      }
-    }
 
     // HTML content for the web component. Runs in open JS mode to allow
     // external javascript code (including shiny code) to access the shadow DOM
@@ -63,14 +49,13 @@ class {{className}} extends HTMLElement {
     shadowRoot.innerHTML = `<div class = "shinywc-root"></div>`;
   }
 
-  // Triggered when the element is added to the page
   connectedCallback() {
-    //console.log('Custom element added to page.');
-
     let rootElement = this.shadowRoot.querySelector(".shinywc-root");
 
-    document.body.append(this.parentNode.querySelector(`#{{className}}`).cloneNode(true))
-    this.parentNode.querySelector(`#{{className}}`).remove()
+    if (this.parentNode.querySelector(`#WcTestid`) != null) {
+      document.body.append(this.parentNode.querySelector(`#{{className}}`).cloneNode(true))
+      this.parentNode.querySelector(`#{{className}}`).remove()
+    }
 
     this.shadowRoot.querySelector(".shinywc-root").appendChild(document.querySelector(`#{{className}}`).content.cloneNode(true))
 
@@ -88,6 +73,7 @@ class {{className}} extends HTMLElement {
         this.append(node)
       })
 
+    // Parse repeater nodes
     this.repeaterTemplates = [...this.selectAll("[data-from-shiny-repeater]")].map(node => {
       node.setAttribute("templateId", Date.now())
 
@@ -97,7 +83,6 @@ class {{className}} extends HTMLElement {
       }
 
       node.remove()
-
       return(template)
     })
 
@@ -124,6 +109,7 @@ class {{className}} extends HTMLElement {
               : 1
             if (this.loadComplete) {
               this.dispatchEvent(this.updatedEvent);
+              event.stopPropagation();
             }
           }.bind(this), false);
         })
@@ -132,12 +118,22 @@ class {{className}} extends HTMLElement {
     // Sets the inital state of the component based on the given initialState
     this.setState(this.initialState);
 
-
-
     // if (this.dataset.numberDependencies != 0) {
     //   this.classList.add("shinywc-shine");
     //   rootElement.style.opacity = 0;
     // }
+
+    this.onRenderCallbacks
+      .filter(isNaN)
+      .map((callbackName) => {
+        let temp = document.createElement("script")
+        temp.src = callbackName
+        temp.async = false
+        
+        
+
+        document.body.appendChild(temp)
+      })
   }
 
   // Triggered when the element is removed to the page
@@ -147,8 +143,6 @@ class {{className}} extends HTMLElement {
 
   // Update all component values based on a given object
   setState(newState) {
-
-    debugger
     this.newState = {
       state: newState,
       timestamp: Date.now()
@@ -169,6 +163,12 @@ class {{className}} extends HTMLElement {
     if (this.loadComplete) {
       this.dispatchEvent(this.updatedEvent);
     }
+
+    // $( document ).ready(function() {
+    //   if (!!Shiny) {
+    //     Shiny?.bindAll();
+    //   }
+    // });
   }
 
   // Parses and returns a single object with values representing the web component
@@ -178,8 +178,6 @@ class {{className}} extends HTMLElement {
   // secondary shiny input is also updated and can be observed in shiny as a
   // reactive value under input${inputId}_{key}
   getState() {
-
-    debugger
     let returnState = {}
 
     // Find all elements in the web component that have binding attributes for
@@ -287,9 +285,6 @@ class {{className}} extends HTMLElement {
 
   // Updates all HTML elements that read information for a specific state prop
   updateBindings(prop, value = '') {
-
-    debugger
-
     let repeaters = this.repeaterTemplates.filter((single) => {
       return(single.node.getAttribute("data-from-shiny-repeater") == prop)
     })
@@ -334,54 +329,6 @@ class {{className}} extends HTMLElement {
           return elementList;
         }, {})
 
-        
-
-      
-        // let keyAttribute = ["property", "attribute", "style", "class"].filter(attribute => {
-        //   return tempnode.getAttribute(`data-from-shiny-${attribute}`)?.split(":").includes("key")
-        // })
-
-        // let noKey = false
-        // if (keyAttribute.length < 1) {
-        //   noKey = true
-        //   keyAttribute = ["property", "attribute", "style", "class"].filter(attribute => {
-        //     return tempnode.getAttribute(`data-from-shiny-${attribute}`)?.replace("key", "value").split(":").includes("value")
-        //   })
-        // }
-
-        // let valueAttribute = ["property", "attribute", "style", "class"].filter(attribute => {
-        //   return tempnode.getAttribute(`data-from-shiny-${attribute}`)?.split(":").includes("value")
-        // })
-
-        // let singlePropKey = tempnode.getAttribute(`data-from-shiny-${keyAttribute}`)
-        // let singlePropValue = tempnode.getAttribute(`data-from-shiny-${valueAttribute}`)
-
-        // const bindPropKey = singlePropKey.includes(':') ? singlePropKey.split(':').shift() : singlePropKey;
-        // const bindPropValue = singlePropValue.includes(':') ? singlePropValue.split(':').shift() : singlePropValue;
-
-        // switch(valueAttribute[0]) {
-        //   case "property":
-        //     tempnode[bindPropValue] = val;
-        //     break;
-        //   case "attribute":
-        //     tempnode.setAttribute(bindPropValue, val.toString());
-        //     break;
-        // }
-
-        // let secondaryValue = keyAttribute
-        // if (noKey) {
-        //   secondaryValue = valueAttribute
-        // }
-
-        // switch(keyAttribute[0]) {
-        //   case "property":
-        //     tempnode[bindPropKey] = val;
-        //     break;
-        //   case "attribute":
-        //     tempnode.setAttribute(bindPropKey, val.toString());
-        //     break;
-        // }        
-
         single.parent.appendChild(tempnode.cloneNode(true))
       }, this)
     }, this)
@@ -417,67 +364,61 @@ class {{className}} extends HTMLElement {
 
             break;
           }
-                
 
           switch(type) {
             case "property":
               if (bindProp == "innerHTML") {
-                // let dom = document.createElement('div') 
+                let dom = document.createElement('div') 
                 // let temp = document.createElement('div') 
 
                 // console.log(bindValue)
 
-                bindValue = bindValue.toString().replace(/&lt;/g , "<")
+                
+
+                bindValue = bindValue.toString()
+                  .replace(/&lt;/g , "<")
                   .replace(/&gt;/g , ">")
                   .replace(/&quot;/g , "\"")
                   .replace(/&#39;/g , "\'")
                   .replace(/&amp;/g , "&")
 
-                // dom.innerHTML = bindValue
-                
+                dom.innerHTML = bindValue
 
-                // // Automatically slots ui outputs from shiny
-                // this.autoSlots.map((selector) => [ ...dom.querySelectorAll(selector)])
-                //   .flat()
-                //   .forEach(node => {
-                //     temp.appendChild(dom.cloneNode(true))
-                //     this.append(temp)
+                Object.values(dom.querySelectorAll("template")).forEach((template) => {
+                  document.body.appendChild(template.cloneNode(true))
+                  template.remove()
+                })
 
-                //     let slot = document.createElement('slot');
-                //     let randomName = `slot${Math.random().toString().substring(2)}${new Date().getTime()}`
-                //     slot.setAttribute('name', randomName)
+                let scriptTags = document.createElement("div")
+                Object.values(dom.querySelectorAll("script")).forEach((script) => {
+                  let scriptNode = document.createElement("script")
+                  scriptNode.src = script.src
 
-                //     temp.setAttribute('slot', randomName)
+                  console.log(scriptNode)
+                  document.body.appendChild(scriptNode)
+                  script.remove()
+                })
 
-                    
-                    
-
-                //     // $(node).replaceWith(slot)
-
-                //     dom.append(slot)
-                //   })
-
-                // // bindValue = dom.innerHTML  
-
-                // debugger
-
-                // // dom.querySelectorAll(".shinywc-component").forEach((node) => {
-                // //   document.body.appendChild(node.cloneNode(true))
-                // //   node.remove()
-                // // })
-
-                // // dom.querySelectorAll("script").forEach((node) => {
-                // //   document.head.appendChild(node.cloneNode(true))
-                // //   node.remove()
-                // // })
-
-                // bindValue = dom.innerHTML
+                bindValue = dom.innerHTML
               }
 
               isStateUpdate ? target.setState({[`${bindProp}`]: bindValue}) :
                 this.isArray(bindValue)
                   ? target[bindProp] = bindValue
                   : node[bindProp] = bindValue;
+              // Automatically slots ui outputs from shiny
+              this.autoSlots.map((selector) => [ ...this.selectAll(selector)])
+                .flat()
+                .forEach(node => {
+                  let slot = document.createElement('slot');
+                  let randomName = `slot${Math.random().toString().substring(2)}${new Date().getTime()}`
+                  slot.setAttribute('name', randomName)
+
+                  node.setAttribute('slot', randomName)
+                  $(node).replaceWith(slot)
+
+                  this.append(node)
+                })
               break;
             case "attribute":
               isStateUpdate ? target.setState({[`${bindProp}`]: bindValue}) :
@@ -568,7 +509,7 @@ class {{className}} extends HTMLElement {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  // Returns a given string with the first letter uppercased
+  // Runs a given function inside the component shadow dom
   scopedCallback(callback) {
     callback.parseFunction().bind(this.shadowRoot)()
   }
