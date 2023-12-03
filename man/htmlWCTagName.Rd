@@ -7,13 +7,13 @@
 htmlWCTagName(string)
 }
 \arguments{
-\item{string}{The string to parse into a valid HTML tag name}
+\item{string}{The string to parse into a valid HTML tag name.}
 }
 \value{
 A valid HTML tag name.
 }
 \description{
-Converts a string into a valid format that can be used as a HTML tag name
+Converts a string into a valid format that can be used as a HTML tag name.
 }
 \keyword{html}
 \keyword{internal}

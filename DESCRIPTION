@@ -1,7 +1,7 @@
 Package: shinyBound
 Type: Package
 Title: Easy shiny bindings directly from HTML
-Version: 0.1.1
+Version: 0.2.0
 Authors@R: person("Pedro", "Silva", email = "pedrocoutinhosilva@gmail.com",
   role = c("aut", "cre"))
 Description: Easy shiny widgets by annotating HTML directly.
@@ -16,18 +16,13 @@ Imports:
     jsonlite,
     stringr,
     rvest,
-    stringi,
     httr,
     readr,
-    xml2
+    fs,
+    rlang
 Suggests:
     testthat (>= 3.0.0),
-    rvest,
-    devtools,
-    covr,
-    rmarkdown,
-    htmltools,
-    knitr
+    devtools
 RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 Language: en-US

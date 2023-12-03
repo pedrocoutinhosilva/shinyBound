@@ -31,3 +31,16 @@ navbar:
       href: https://github.com/pedrocoutinhosilva/shinyBound
     - icon: fa-twitter fa-lg
       href: https://twitter.com/sparktuga
+
+code:
+  width: 72
+
+reference:
+  - title: Components
+    desc: Functions that can be used to create and interact with components.
+    contents:
+      - has_keyword("components")
+  - title: Templating Utilities
+    desc: Functions that can be used to assist in creating template bindings.
+    contents:
+      - has_keyword("template")

@@ -13,6 +13,9 @@
     <loc>/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>/reference/attachStateDependencies.html</loc>
+  </url>
+  <url>
     <loc>/reference/cns.html</loc>
   </url>
   <url>
@@ -52,6 +55,9 @@
     <loc>/reference/listComponents.html</loc>
   </url>
   <url>
+    <loc>/reference/listRenderTags.html</loc>
+  </url>
+  <url>
     <loc>/reference/registerComponent.html</loc>
   </url>
   <url>
@@ -83,6 +89,9 @@
   </url>
   <url>
     <loc>/reference/useComponent.html</loc>
+  </url>
+  <url>
+    <loc>/reference/useShinyBound.html</loc>
   </url>
   <url>
     <loc>/reference/validateSessionObject.html</loc>

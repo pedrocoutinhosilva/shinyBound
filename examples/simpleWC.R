@@ -3,10 +3,8 @@ library(shinyBound)
 
 # Define UI for application
 ui <- fluidPage(
-  useShinyBound(),
   actionButton("update", "Action button"),
-  actionButton("updatein", "Update IN"),
-  h4("Custom component"),
+  h4("Component in a uiOutput"),
   uiOutput("out"),
   h4("Update attributes"),
   h4("Custom component Input values"),
@@ -17,24 +15,22 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   output$out <- renderUI({
     tagList(
-      component("sneaky", h1(fsProperty = "innerHTML:label", "big test"), list(label = "starter")),
-      component("testID",
+      component(
+        "testID",
         tags$div(
-          fsProperty="innerHTML:label",
-          fsStyle="color:bling|font-size|border-color:bling",
-
+          fsProperty = "innerHTML:label",
+          fsStyle = "color:bling|font-size|border-color:bling",
           style = "
             border: 1px solid;
             width: 100px; height: 100px;
             display: flex; justify-content: center; align-items: center;
             text-align: center;
           ",
-
           tags$style("p {background: red;}"),
           tags$script("console.log(document.querySelector('div'))"),
           tags$script("console.log(document.querySelector('div'))")
         ),
-        list(label = component("test", h1(fsProperty = "innerHTML:label", "big test"), list(label = component("inner2", h1(fsProperty = "innerHTML:label", "bigger test"), list(label = "starter")))))
+        list(label = "starter")
       )
     )
   })
@@ -46,14 +42,6 @@ server <- function(input, output, session) {
       `font-size` = paste0(sample(1:80, 1), "px")
     )
   })
-
-  observeEvent(input$updatein, {
-    print(input$updatein)
-    updateComponent(session, "test",
-      label = input$updatein
-    )
-  })
-
 
   observeEvent(input$testID, {
     print(input$testID)

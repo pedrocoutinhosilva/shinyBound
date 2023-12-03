@@ -87,7 +87,11 @@ be read using input$inputId or directly via input$inputId_attribute.}
 a HTML tag that can be added to the page.
 }
 \description{
-Links diferent bindings to the given tag. For all list arguments, instead of
-a name = value pair, a simple string can be used instead if name and value
-are the same. Both long and short versions of the attributes can be used.
+Links diferent bindings to the given tag. For all list arguments, instead
+  of a name = value pair, a simple string can be used instead if name and
+  value are the same.
+  Both long and short versions of the attributes can be used.
 }
+\keyword{html}
+\keyword{template}
+\keyword{utils}

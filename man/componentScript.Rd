@@ -2,7 +2,7 @@
 % Please edit documentation in R/components.R
 \name{componentScript}
 \alias{componentScript}
-\title{Run JS code under the component scope.}
+\title{Run JS code under a component scope.}
 \usage{
 componentScript(session = getDefaultReactiveDomain(), inputId, callback)
 }
@@ -15,7 +15,13 @@ to register the component.}
 
 \item{callback}{Named attributes to update and corresponding values.}
 }
+\value{
+No return value, called for side effects.
+}
 \description{
 Run JS code under the component scope. The provided callback will have
-access to the `this` JavaScript property as if running in the component root.
+  access to the `this` JavaScript property as if running in the
+  component root.
 }
+\keyword{component}
+\keyword{components}

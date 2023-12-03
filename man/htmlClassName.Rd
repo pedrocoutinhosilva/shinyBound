@@ -7,13 +7,13 @@
 htmlClassName(string)
 }
 \arguments{
-\item{string}{The string to parse into a valid class name}
+\item{string}{The string to parse into a valid class name.}
 }
 \value{
 A valid HTML class name (letters only, no spaces).
 }
 \description{
-Converts a string into a valid format that can be used as a class name
+Converts a string into a valid format that can be used as a class name.
 }
 \keyword{html}
 \keyword{internal}

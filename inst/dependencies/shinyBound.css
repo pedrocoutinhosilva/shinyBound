@@ -1,4 +1,4 @@
-.shinywc-component {
+.shinywc-wrapper, .shinywc-component {
   display: inline-block;
 }
 
@@ -61,4 +61,9 @@ photo {
   100% {
     background-position: 468px 0;
   }
+}
+
+.shinywc-root {
+  height: 100%;
+  position: relative;
 }

@@ -3,12 +3,14 @@ library(shinyBound)
 
 # https://www.webcomponents.org/element/@honatas/multi-select-webcomponent
 
-registerComponent("fancyDropdown",
-    HTML('
-
+component_html <- HTML('
     <script>console.log("shiny")</script>
     <script type="module" src="multi-select-webcomponent.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
+
+    <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    </head>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
     <label fsProperty="innerHTML:content" for="planetId" class="form-label p-0">Planets</label>
@@ -35,13 +37,11 @@ registerComponent("fancyDropdown",
       <option value="8">Neptune</option>
     </multi-select>
     ')
-)
 
 # Define UI for application
 ui <- fluidPage(
-    HTML('
-    '),
-  useComponent("testID", "fancyDropdown",
+  h2("Component using external fonts, updated with a component script"),
+  component("testID", component_html,
     list(content = "init label"),
     myAttribute = "test",
     time = Sys.Date(),
@@ -69,7 +69,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$update, {
-    updateComponent(session, "testID", content = "updated", disabled = TRUE)
+    updateComponent(session, "testID", content = "updated")
 
     componentScript(session, "testID", HTML("function() {
       const sun = document.createElement('option');

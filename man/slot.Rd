@@ -13,6 +13,9 @@ slot(name)
 a HTML tag that can be added to the page.
 }
 \description{
-A slot HTML tag with a given slot name. Can be used to define template areas
-where content will be added in the future.
+A slot HTML tag with a given slot name. Can be used to define template
+  areas where content will be added in the future.
 }
+\keyword{internal}
+\keyword{namespaces}
+\keyword{utils}

@@ -14,6 +14,9 @@ A namespaced Id
 }
 \description{
 Generates a namespaced id placeholder to allow traditional shiny widgets
-to be used as part of web component templates. Allows those widgets
-to be accessed in the shiny server function via input${componentID}_{id}
+  to be used as part of web component templates. Allows those widgets
+  to be accessed in the shiny server function via input${componentID}_{id}.
 }
+\keyword{internal}
+\keyword{namespaces}
+\keyword{utils}

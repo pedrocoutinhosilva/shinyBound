@@ -11,12 +11,24 @@
 #' @param ... Named attributes to update and corresponding values.
 #'
 #' @return A HTML tagList.
+#' @keywords components component
 #' @export
 component <- function(inputId, innerHTML, defaultState = list(), ...) {
   htmlWCTagName <- htmlWCTagName(inputId)
   htmlClassName <- htmlClassName(htmlWCTagName)
 
-  scaffoldWC(inputId,  innerHTML |> toString(), htmlClassName, htmlWCTagName, defaultState, ...)
+  tagList(
+    attachStateDependencies(...),
+    do.call(attachStateDependencies, defaultState),
+    scaffoldWC(
+      inputId,
+      innerHTML |> toString(),
+      htmlClassName,
+      htmlWCTagName,
+      defaultState,
+      ...
+    )
+  )
 }
 
 #' Update a component state.
@@ -32,20 +44,24 @@ component <- function(inputId, innerHTML, defaultState = list(), ...) {
 #' @importFrom shiny getDefaultReactiveDomain
 #'
 #' @return No return value, called for side effects.
+#' @keywords components component
 #' @export
 updateComponent <- function(session = getDefaultReactiveDomain(),
                             inputId,
                             ...) {
   validateSessionObject(session)
 
+  attachStateDependencies(...)
+
   session$sendInputMessage(inputId, dropNulls(list(...)))
 }
 
-#' Run JS code under the component scope.
+#' Run JS code under a component scope.
 #'
 #' @description
-#' Run JS code under the component scope. The provided callback will have
-#' access to the `this` JavaScript property as if running in the component root.
+#'   Run JS code under the component scope. The provided callback will have
+#'   access to the `this` JavaScript property as if running in the
+#'   component root.
 #'
 #' @param session The session object passed to function given to shinyServer.
 #'   Default is getDefaultReactiveDomain().
@@ -55,6 +71,8 @@ updateComponent <- function(session = getDefaultReactiveDomain(),
 #'
 #' @importFrom shiny getDefaultReactiveDomain
 #'
+#' @return No return value, called for side effects.
+#' @keywords components component
 #' @export
 componentScript <- function(session = getDefaultReactiveDomain(),
                             inputId,

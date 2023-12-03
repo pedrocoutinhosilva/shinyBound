@@ -16,5 +16,8 @@ a HTML tag that can be added to the page.
 }
 \description{
 Wraps a given HTML tag into a valid HTML element what can be slotIn into a
-specific slot in a web component.
+  specific slot in a web component.
 }
+\keyword{internal}
+\keyword{namespaces}
+\keyword{utils}

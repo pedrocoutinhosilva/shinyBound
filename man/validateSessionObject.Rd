@@ -12,7 +12,7 @@ validateSessionObject(
 \arguments{
 \item{session}{Any session object.}
 
-\item{label}{The caller function's name}
+\item{label}{The caller function's name.}
 }
 \value{
 No return value, called for side effects.

@@ -7,22 +7,24 @@
 scaffoldWC(inputId, innerHTML, htmlClassName, htmlWCTagName, initialState, ...)
 }
 \arguments{
-\item{inputId}{Component Id}
+\item{inputId}{The Component Id.}
 
-\item{innerHTML}{A valid HTML fragment to use as the component shadow DOM}
+\item{innerHTML}{A valid HTML fragment to use as the component shadow DOM.}
 
-\item{htmlClassName}{A valid web class name to use in the template}
+\item{htmlClassName}{A valid web class name to use in the template.}
 
-\item{htmlWCTagName}{A valid HTML tag name to use in the template}
+\item{htmlWCTagName}{A valid HTML tag name to use in the template.}
 
-\item{initialState}{Initial state of the component binds}
+\item{initialState}{Initial state of the component binds.}
 
-\item{...}{Attributes and content of the web component HTML wrapper tag}
+\item{...}{Attributes and content of the web component HTML wrapper tag.}
 }
 \value{
 A HTML tagList.
 }
 \description{
 Generates a HTML tag with the required web component creation code,
-global dependencies, shiny bindings and tag content.
+  global dependencies, shiny bindings and tag content.
 }
+\keyword{internal}
+\keyword{templates}

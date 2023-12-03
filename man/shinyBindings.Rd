@@ -7,16 +7,19 @@
 shinyBindings(template, htmlClassName, htmlWCTagName)
 }
 \arguments{
-\item{template}{Path to an HTML template file}
+\item{template}{Path to an HTML template file.}
 
-\item{htmlClassName}{A valid web class name to use in the template}
+\item{htmlClassName}{A valid web class name to use in the template.}
 
-\item{htmlWCTagName}{A valid HTML tag name to use in the template}
+\item{htmlWCTagName}{A valid HTML tag name to use in the template.}
 }
 \value{
 A HTML tagList.
 }
 \description{
 Generates a HTML fragment that can be added to a page to initialize a
-specific set of shiny bindings for a component. Used in scaffoldWC().
+  specific set of shiny bindings for a component. Used in scaffoldWC().
 }
+\keyword{dependencies}
+\keyword{internal}
+\keyword{templates}

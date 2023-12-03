@@ -23,3 +23,5 @@ Creates a web component instance associated with the given inputId with
 the given HTML and state. For reusable components, it is adviced to use
 registerWebComponent() and  useWebComponent() instead.
 }
+\keyword{component}
+\keyword{components}

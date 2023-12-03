@@ -5,10 +5,10 @@ $.extend({{className}}InputBinding, {
   },
   getValue: function(el) {
     if (!el.loadComplete) {
-      el.loadComplete = true; 
+      el.loadComplete = true;
       return;
     }
-    
+
     return !!el.getState ? el.getState() : null;
   },
   setValue: function(el, value) {

@@ -20,3 +20,5 @@ No return value, called for side effects.
 \description{
 Update the component state with the corresponding inputId.
 }
+\keyword{component}
+\keyword{components}

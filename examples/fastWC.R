@@ -4,8 +4,7 @@ library(shinyBound)
 
 # https://www.fast.design/docs/components/getting-started/
 
-registerComponent("fancyDropdown",
-    HTML('
+component_html <- HTML('
     <script type="module" src="https://cdn.jsdelivr.net/npm/@microsoft/fast-components@2.16.0/dist/fast-components.min.js"></script>
     <fast-card>
       <div style="padding: 0 10px 10px; color: var(--neutral-foreground-rest);">
@@ -26,13 +25,12 @@ registerComponent("fancyDropdown",
       </div>
     </fast-card>
     ')
-)
 
 # Define UI for application
 ui <- flexPage(
-    HTML('
-    '),
-  useComponent("testID", "fancyDropdown",
+  h2("Wrapping a fast UI component into a widget"),
+  component(
+    "testID", component_html,
     list(content = "init label")
   )
 )
@@ -40,7 +38,6 @@ ui <- flexPage(
 # Define server logic
 server <- function(input, output, session) {
   observeEvent(input$testID, {
-
     print(input$testID)
   })
 }

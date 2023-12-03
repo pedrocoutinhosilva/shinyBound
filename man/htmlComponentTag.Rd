@@ -7,18 +7,18 @@
 htmlComponentTag(htmlWCTagName, inputId, ...)
 }
 \arguments{
-\item{htmlWCTagName}{A valid HTML tag name to use in the template}
+\item{htmlWCTagName}{A valid HTML tag name to use in the template.}
 
-\item{inputId}{The tag ID attribute}
+\item{inputId}{The tag ID attribute.}
 
-\item{...}{Attributes and content of the web component HTML wrapper tag}
+\item{...}{Attributes and content of the web component HTML wrapper tag.}
 }
 \value{
 A HTML tagList.
 }
 \description{
 Generates a HTML custom tag with a defined ID, content and attributes.
-Used in scaffoldWC().
+  Used in scaffoldWC().
 }
 \keyword{html}
 \keyword{internal}
