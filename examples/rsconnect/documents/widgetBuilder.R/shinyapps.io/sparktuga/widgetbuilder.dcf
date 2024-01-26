@@ -1,0 +1,13 @@
+name: widgetbuilder
+title: widgetbuilder
+username: sparktuga
+account: sparktuga
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11039686
+bundleId:
+url: https://sparktuga.shinyapps.io/widgetbuilder/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: dependencyWC.R|fastWC.R|minimal.R|reactWC.R|simpleWC.R

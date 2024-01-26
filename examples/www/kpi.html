@@ -1,0 +1,69 @@
+<!-- head tags can be used to register dependencies available globally, outside the component scope -->
+<!-- This is required for fonts to work (like in the case of bootstrap icons) -->
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<!-- global dependencies might still need to be made available locally -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<!-- Bootstrap options. Icon list avaialble here https://fontawesome.com/icons -->
+<!-- Boostrap Icon sizes supported: xs, sm, lg -->
+<!-- brackets {} can be used to interpolate state values into class names -->
+<div class="kpi-card" fsStyle="background">
+    <div class="icon-wrapper">
+        <i fsClass="fa-{icon}:icon|fa-{size}:size" fsStyle="color" class="fa-solid"></i>
+    </div>
+    <h2 class="title-wrapper" fsStyle="color" fsProperty="innerHTML:title">title</h2>
+    <h3 class="content-wrapper" fsStyle="color" fsProperty="innerHTML:value">value</h3>
+</div>
+
+<style>
+    .kpi-card {
+        height: 100%;
+        background: dimgray;
+        color: white;
+        display: grid;
+        overflow: hidden;
+
+        position: relative;
+
+        grid-template-columns: repeat(1, minmax(auto, 1fr));
+        /* grid-template-rows: repeat(2, minmax(auto, 1fr)); */
+        grid-template-areas:
+            "title"
+            "content";
+
+        min-width: 300px;
+        width: 100%;
+        border: 1px solid black;
+    }
+
+    .kpi-card .icon-wrapper {
+        grid-area: icon;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 200%;
+
+        float: right;
+        font-size: 15rem;
+        position: absolute;
+        top: 0rem;
+        right: -0.3rem;
+        bottom: -0.3rem;
+        opacity: .16;
+    }
+    .kpi-card .title-wrapper {
+        grid-area: title;
+
+        margin-left: 0.83em;
+        margin-right: 0.83em;
+    }
+    .kpi-card .content-wrapper {
+        grid-area: content;
+        padding: 0 1.3em;
+    }
+</style>
